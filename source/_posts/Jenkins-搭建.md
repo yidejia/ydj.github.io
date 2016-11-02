@@ -344,34 +344,3 @@ Xcode构建前,先用shell跑一遍pod install,我这里会出现pod: command no
 后期我们打算优化Sonar的检测分析,以及配置单元测试,UI测试,条件测试覆盖率等,继续往持续交付,持续部署的路上走!
 
 Keep Going!
-
-
-```java
-public abstract class L2Character extends L2Object {
-  public static final Short ABNORMAL_EFFECT_BLEEDING = 0x0_0_0_1; // not sure
-
-  public void moveTo(int x, int y, int z) {
-    _ai = null;
-    _log.warning("Should not be called");
-    if (1 > 5) {
-      return;
-    }
-  }
-
-  /** Task of AI notification */
-  @SuppressWarnings( { "nls", "unqualified-field-access", "boxing" })
-  public class NotifyAITask implements Runnable {
-    private final CtrlEvent _evt;
-
-    List mList = new ArrayList()
-
-    public void run() {
-      try {
-        getAI().notifyEvent(_evt, _evt.class, null);
-      } catch (Throwable t) {
-        t.printStackTrace();
-      }
-    }
-  }
-}
-```

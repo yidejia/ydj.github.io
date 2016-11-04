@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yidejia.github.io/"/>
-  <updated>2016-11-04T07:37:39.000Z</updated>
+  <updated>2016-11-04T07:48:16.000Z</updated>
   <id>https://yidejia.github.io/</id>
   
   <author>
@@ -14,6 +14,51 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>通俗讲解股票类app - TCP网络通信层设计</title>
+    <link href="https://yidejia.github.io/2016/11/04/caokun%20-%20socket/"/>
+    <id>https://yidejia.github.io/2016/11/04/caokun - socket/</id>
+    <published>2016-11-04T07:12:55.000Z</published>
+    <updated>2016-11-04T07:48:16.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h1><p>要做的产品 — 炒股app</p>
+<ul>
+<li><strong>数据量大</strong>：5000多支股票，每支股票有分时，分笔数据，画一条k线，可能要500条分时数据，甚至更多。</li>
+<li><strong>实时性</strong>：股价每分每秒都在变化，一分钟产生很多条数据，用户要看到最新的信息，真的是一秒钟上下几十万啊。</li>
+<li><strong>服务器主动推</strong>：股票预警等等一些重要消息，需要服务器实时推送，保证客户端100%收到，收不到可能造成客户资金损失。</li>
+</ul>
+<p>由于这些场景因素，股票的数据不能通过HTTP协议来传输了，只能走TCP协议了，当然一些个人信息什么的还是走HTTP的。</p>
+<h1 id="技术细节实现"><a href="#技术细节实现" class="headerlink" title="技术细节实现"></a>技术细节实现</h1><p>1.<strong>数据量比较大</strong>，一次请求可能返回几百条数据到移动端，对数据要进行压缩，这里采用了 google 的 <strong>Protocol Buffer</strong> 数据传输格式，因为它对象序列化速度快，压缩率高 (ps: http 一般用 json, xml)。</p>
+<p>2.<strong>实时性与主动推</strong>：服务器与客户端之间维护一条 tcp 长连接，避免每次3次握手，4次挥手，和产生一堆 time_wait 状态的 socket 占用资源。走tcp协议需要自己维护一些状态<br><strong>掉线重连</strong>，移动端网络情况复杂，有3G，4G，wifi，socket 经常断开，它断了要自动连上，并且还要<strong>对应用层透明！</strong>不能让应用层感知到！连上后数据接着之前断开的地方发送，不能有影响。<br><strong>自动登录</strong>，这个是掉线重连后要做的一个操作，不登录拿不到股票数据。登录后接着做一个消息同步，看看有没有新消息。</p>
+<p>3.<strong>客户端100%收到</strong>（可靠性）：除了 tcp 超时重传和3次ack回应保证了可靠传输之外，我们在app里也实现了一套<strong>应用层的ack机制</strong>，服务器保存了一组消息，每个消息有个seq号，一个消息推给客户端后，客户端拿到消息的seq，要发ack请求回应服务器这个消息，然后下次服务器才不会推给你，不然的话，下次服务器还是会推给你的。掉线重连，重登录后会同步一次你订阅过的消息，把上次没收到的，或者丢包的消息再同步过来。</p>
+<p>4.<strong>客户端的负载均衡</strong>，这个一般在服务器做，但后台那边说防止ip封锁，还有某些服务器不能在全国访问到，所以把负载均衡放在客户端做了，app启动拉取服务器列表，然后多线程并发发送测速包，得到每个服务器延迟和负载，然后选个最优的服务器连上即可，延迟可以理解为路有多长，负载可以理解为路上拥堵情况，显然最短的路不一定是最快的，它可能很堵。</p>
+<p>根据以上因素，我设计了一套TCP层的网络请求逻辑，应用层只管发请求就好了，我只告诉你有没有结果，上面的细节全部屏蔽在底层，<strong>对应用层透明！</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// 应用层发一个 tcp 请求的代码例子，支持多线程循环发：</div><div class="line">[[TCPAPI instance] requestStockInfoWithcompletion:^(id response, NSString *error) &#123;</div><div class="line">    if (error == nil) &#123;</div><div class="line">        NSLog(@&quot;成功：%@&quot;, (NSArray *)response);</div><div class="line">    &#125; else &#123;</div><div class="line">        NSLog(@&quot;失败：%@&quot;, error);</div><div class="line">    &#125;</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
+<blockquote>
+<p>测试：我用一条线程以每隔 0.1 秒的速度循环发送请求，然后模拟断网，网络差，被服务器踢下线等等情况，程序工作正常，一旦有网络，数据就会成功返回。</p>
+</blockquote>
+<p>整个app网络层的请求逻辑图：<br>我有个 tcp 请求同步队列接收应用层来的请求，有句话叫做”we cannot send directly, so queue it”，然后一个请求走完图中的逻辑，下一个请求接着走，每一个请求有一个定时器，超时就回调一个失败结果给应用层，有张映射表保存请求和回调之间的映射。<br>然后还一个socket发送队列，真正去发送数据的队列，socket接收队列就不用说了吧，把接收到的数据通过pb协议反序列化得到pb对象的，这里有个 tcp 分片机制导致的 <strong>tcp 粘包问题</strong>，就是 socket 返回一段二进制数据不一定刚好就是一个对象的全部数据，可能少可能多，要自己判断，拆包的时候注意下就好了。<br>得到 pb 对象，把这个结果回调给应用层，整个流程就走完了。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-7b0dff3e234ee701.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="tcp请求逻辑.png"></p>
+<p>图片可能太大，可以到<a href="https://github.com/hehe520/AsyncSocket" target="_blank" rel="external">这里下载</a>来看。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;场景&quot;&gt;&lt;a href=&quot;#场景&quot; class=&quot;headerlink&quot; title=&quot;场景&quot;&gt;&lt;/a&gt;场景&lt;/h1&gt;&lt;p&gt;要做的产品 — 炒股app&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据量大&lt;/strong&gt;：5000多支股票，每支股票有分时，分笔数据
+    
+    </summary>
+    
+      <category term="移动端" scheme="https://yidejia.github.io/categories/%E7%A7%BB%E5%8A%A8%E7%AB%AF/"/>
+    
+    
+      <category term="曹堃" scheme="https://yidejia.github.io/tags/%E6%9B%B9%E5%A0%83/"/>
+    
+      <category term="socket" scheme="https://yidejia.github.io/tags/socket/"/>
+    
+  </entry>
   
   <entry>
     <title>iOS - 接入WebSocket记录 + 一些个人经验</title>

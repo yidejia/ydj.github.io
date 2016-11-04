@@ -87,7 +87,7 @@
     <link href="https://yidejia.github.io/2016/11/04/caokun_UC_animation/"/>
     <id>https://yidejia.github.io/2016/11/04/caokun_UC_animation/</id>
     <published>2016-11-04T08:12:55.000Z</published>
-    <updated>2016-11-04T08:29:21.000Z</updated>
+    <updated>2016-11-04T08:58:47.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="动画效果"><a href="#动画效果" class="headerlink" title="动画效果"></a>动画效果</h1><p><img src="http://upload-images.jianshu.io/upload_images/2764502-f79c05d1173662a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图1"></p>
 <p>经常用UC看到首页有这么一个动画，就仿造写了一下。</p>
@@ -121,7 +121,7 @@
     
       <category term="动画" scheme="https://yidejia.github.io/tags/%E5%8A%A8%E7%94%BB/"/>
     
-      <category term="ios" scheme="https://yidejia.github.io/tags/ios/"/>
+      <category term="iOS" scheme="https://yidejia.github.io/tags/iOS/"/>
     
   </entry>
   
@@ -175,7 +175,7 @@
     <link href="https://yidejia.github.io/2016/11/04/caokun_websocket/"/>
     <id>https://yidejia.github.io/2016/11/04/caokun_websocket/</id>
     <published>2016-11-04T06:12:55.000Z</published>
-    <updated>2016-11-04T07:37:39.000Z</updated>
+    <updated>2016-11-04T08:59:10.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="闲扯"><a href="#闲扯" class="headerlink" title="闲扯"></a>闲扯</h1><p>WebSocket 以前没用过，之前写过一篇博客是基于原生socket的（<a href="http://www.jianshu.com/p/edb50afa250e" target="_blank" rel="external">查看</a>）比较复杂，慎入。今天另外一个APP需要接websocket了，然后便找到了facebook的 <a href="https://github.com/facebook/SocketRocket" target="_blank" rel="external">SocketRocket</a> 框架，然后用了一天时间接上了，完成了掉线自动重连，自动重登录，心跳等等功能，用法比原生socket简单（原生socket基于TCP/UDP协议）。</p>
 <h1 id="为什么用-WebSocket"><a href="#为什么用-WebSocket" class="headerlink" title="为什么用 WebSocket"></a>为什么用 WebSocket</h1><p>因为APP里面有个聊天功能，需要服务器主动推数据到APP。HTTP 通信方式只能由客户端主动拉取，服务器不能主动推给客户端，如果有实时的消息，要立刻通知客户端就麻烦了，要么客户端每隔几秒钟发一次请求，看看有没有新数据，这种方式想想都知道耗流量电量。还一种方式就是走TCP/UDP协议服务器主动推给你，这种方式省流量。还有就是用websocket，websocket是h5里面的东西，h5我不太会，反正它比原生socket用法简单。</p>
@@ -201,6 +201,8 @@
     
     
       <category term="曹堃" scheme="https://yidejia.github.io/tags/%E6%9B%B9%E5%A0%83/"/>
+    
+      <category term="iOS" scheme="https://yidejia.github.io/tags/iOS/"/>
     
       <category term="websocket" scheme="https://yidejia.github.io/tags/websocket/"/>
     

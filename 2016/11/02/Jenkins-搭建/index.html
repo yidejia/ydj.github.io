@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境 | 伊的家技术博客 | 自驱自律自组织</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="Jenkins">
+  <meta name="description" content="持续集成是敏捷开发的重要一环,它具备以下优点:
+
+减少并降低软件开发中的风险
+将重复性工作自动化，让开发人员更专注于代码
+在任何时间、任何地点生成可部署的软件
+
+随着人员以及项目的增加,以上这些就变得尤为重要.所以我们也在恰当的时机把它引入进来.
+而市面上持续集成系统琳琅满目,有Jenkins,Travis,Circleci,Bitrise,Flow.ci 我们该如何选择,那就参考大数据,朝内还">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境">
+<meta property="og:url" content="https://yidejia.github.io/2016/11/02/Jenkins-搭建/index.html">
+<meta property="og:site_name" content="伊的家技术博客">
+<meta property="og:description" content="持续集成是敏捷开发的重要一环,它具备以下优点:
+
+减少并降低软件开发中的风险
+将重复性工作自动化，让开发人员更专注于代码
+在任何时间、任何地点生成可部署的软件
+
+随着人员以及项目的增加,以上这些就变得尤为重要.所以我们也在恰当的时机把它引入进来.
+而市面上持续集成系统琳琅满目,有Jenkins,Travis,Circleci,Bitrise,Flow.ci 我们该如何选择,那就参考大数据,朝内还">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-6bdfa1e51a834687.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-669cc44ae2cb7f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-36cdd1235c8b8416.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-6dcfef59a82a3822.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-fabc61f59e3309fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-ffd0ddbe56747fb0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-c3d6c9a0897b1b5a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-59ba19827f5435b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-99d62727fde70207.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-8b1a1e0e4bc04cef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-4ffba65d72bad09e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-b6b873d4b8a8bb68.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-7ff86e40cb556c71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-4c36eb4c4654bbc8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-ae552e1a05117ec1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-aed8a25d8e40d731.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-b8b850104d5072e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-98889ea0a711aa70.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-a0282c1dc4955625.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-5dee6977d906121e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-f4b439f3a4c49603.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-5bf68c263b129b41.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-157f4d1ceafdd28a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-70038b72c58536ab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-602532dab5417094.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-907664fe4815d8e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-9ce14831d2c90d70.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-fc0ac2fa2e4c20c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-c9b39ae10a9c40ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-84e9d7c219bd9b3c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-6cf715e14895ceac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-8e81bbcba58e0818.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-a3c2636440e185ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-9196bc98b0d65a5e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2083649-94e742c8dba0e7e2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-11-04T07:01:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境">
+<meta name="twitter:description" content="持续集成是敏捷开发的重要一环,它具备以下优点:
+
+减少并降低软件开发中的风险
+将重复性工作自动化，让开发人员更专注于代码
+在任何时间、任何地点生成可部署的软件
+
+随着人员以及项目的增加,以上这些就变得尤为重要.所以我们也在恰当的时机把它引入进来.
+而市面上持续集成系统琳琅满目,有Jenkins,Travis,Circleci,Bitrise,Flow.ci 我们该如何选择,那就参考大数据,朝内还">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2083649-6bdfa1e51a834687.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="伊的家技术博客" type="application/atom+xml">
+  
+  <meta name="summary" content="伊的家">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css?v=1.1.5">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar"><img src="/img/logo.jpg"></a>
+        <hgroup class="introduce">
+          <h5 class="nickname">伊的家技术部</h5>
+          <a href="mailto:developer@yidejia.com" title="developer@yidejia.com" class="mail">developer@yidejia.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yidejia" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>伊的家技术博客 &copy; 2016</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境</h1>
+        
+        
+
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Jenkins安装配置各种插件"><span class="post-toc-number">1.</span> <span class="post-toc-text">Jenkins安装配置各种插件:</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#项目配置"><span class="post-toc-number">2.</span> <span class="post-toc-text">项目配置</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#自定义环境变量获取Git-Log"><span class="post-toc-number">3.</span> <span class="post-toc-text">自定义环境变量获取Git Log</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Install-Homebrew"><span class="post-toc-number">4.</span> <span class="post-toc-text">Install Homebrew:</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Install-RVM"><span class="post-toc-number">5.</span> <span class="post-toc-text">Install RVM:</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Android端构建配置"><span class="post-toc-number">6.</span> <span class="post-toc-text">Android端构建配置</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#iOS端构建配置"><span class="post-toc-number">7.</span> <span class="post-toc-text">iOS端构建配置</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#针对CocoaPods设置"><span class="post-toc-number">8.</span> <span class="post-toc-text">针对CocoaPods设置</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#非CocoaPods设置"><span class="post-toc-number">9.</span> <span class="post-toc-text">非CocoaPods设置</span></a></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-Jenkins-搭建" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境</h1>
+        <div class="post-meta">
+            <time datetime="2016-11-02T06:12:55.000Z" itemprop="datePublished" class="post-time">
+  2016-11-02
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/移动端/">移动端</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><img src="http://upload-images.jianshu.io/upload_images/2083649-6bdfa1e51a834687.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Jenkins持续集成系统"></p>
+<p>持续集成是敏捷开发的重要一环,它具备以下优点:</p>
+<blockquote>
+<p>减少并降低软件开发中的风险</p>
+<p>将重复性工作自动化，让开发人员更专注于代码</p>
+<p>在任何时间、任何地点生成可部署的软件</p>
+</blockquote>
+<p>随着人员以及项目的增加,以上这些就变得尤为重要.所以我们也在恰当的时机把它引入进来.</p>
+<p>而市面上持续集成系统琳琅满目,有Jenkins,Travis,Circleci,Bitrise,Flow.ci 我们该如何选择,那就参考大数据,朝内还是用百度指数,目前只收录Jenkins和Travis.</p>
+<blockquote>
+<p>Jenkins:蓝色      Travis:绿色</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-669cc44ae2cb7f3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Jenkins和Travis百度搜索趋势"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-36cdd1235c8b8416.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Jenkins和Travis百度搜索人群画像"></p>
+<p>Jenkins更为成熟，它是框架式的，大部分功能通过插件的方式来实现，可扩展性非常高.</p>
+<p>废话少说,直接来撸一撸!</p>
+<p>下载<a href="http://www.androiddevtools.cn/" title="Android SDK" target="_blank" rel="external">Android SDK</a></p>
+<p>下载<a href="https://jenkins.io/" title="Jenkins 安装" target="_blank" rel="external">Jenkins 安装</a></p>
+<p>通过HomreBrew安装启动和停止jenkins服务:</p>
+<blockquote>
+<p>brew install jenkins</p>
+<p>brew tap homebrew/services</p>
+<p>Start Jenkins: sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist</p>
+<p>Stop Jenkins: sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist</p>
+<p>开机启动 Run at boot:  /Library/LaunchDaemons 可以在这里修改jenkins相关信息</p>
+<p>Run at login: /Users/Lavare/Library/LaunchAgents</p>
+</blockquote>
+<p> 通过pkg文件安装的可以通过 java命令启动:</p>
+<blockquote>
+<p>java -jar /Applications/Jenkins/jenkins.war</p>
+</blockquote>
+<h1 id="Jenkins安装配置各种插件"><a href="#Jenkins安装配置各种插件" class="headerlink" title="Jenkins安装配置各种插件:"></a>Jenkins安装配置各种插件:</h1><p><strong>Git  —- GitLab —- Gitlab Authentication plugin</strong>  (Git授权插件)</p>
+<p> <strong>Environment Injector Plugin</strong> (环境变量注入,目前用于获取gitLog,并传递给Fir.im上传信息)</p>
+<p><strong>Email Extension</strong>  (邮件扩展插件,打包完成后邮件通知各人员)</p>
+<p>  <strong>Fir Plugin</strong>  (Fir.im上传插件,apk/ipa 分发渠道)</p>
+<p> <strong>Bearychat Plugin</strong> (上传到Bearychat插件,同于通知)</p>
+<p><strong>Gradle Plugin</strong>   (Android 构建插件)</p>
+<p> <strong>Xcode integration</strong>  (iOS构建插件)</p>
+<p><strong>Keychains and Provisioning Profiles Management</strong>  (iOS证书配置插件)</p>
+<p><strong>Sonar:</strong>代码质量管理平台,也是通过安装各种插件来扩展代码检测功能</p>
+<blockquote>
+<p>1.糟糕的复杂度分布</p>
+<p>2.重复</p>
+<p>3.缺乏单元测试</p>
+<p>4.没有代码标准</p>
+<p>5.没有足够的或者过多的注释</p>
+<p>6.潜在的bug</p>
+<p>7.糟糕的设计</p>
+</blockquote>
+<p>在系统管理界面配置-&gt;系统设置</p>
+<p>GitLab配置,使用Api Token验证</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-6dcfef59a82a3822.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置GitLab的Token"></p>
+<p>Bearychat配置,方便后期构建成功后通知到相应群组</p>
+<blockquote>
+<ul>
+<li><p>Team Subdomain: 在 <a href="https://ydj.bearychat.com" target="_blank" rel="external">https://ydj.bearychat.com</a> 中，如yjd便是团队的 subdomain</p>
+</li>
+<li><p>Integration Token: 在 BearyChat 中的 Jenkins 机器人的 hook 地址中， 最后的部分便是 token。</p>
+</li>
+<li><p>Channel: 讨论组名称，如果指定的话，可以将 Jenkins 通知推送到该讨论组</p>
+</li>
+<li><p>Build Server URL: 团队的 Jenkins 服务器所在的地址，用于构建 Jenkins 通知中的链接等信息</p>
+</li>
+<li><p>Test Connection: 在填写上面的相关信息后，可以测试下是否配置成功</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-fabc61f59e3309fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Bearychat配置"></p>
+<p>配置Sonar代码质量管理服务器</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-ffd0ddbe56747fb0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Sonar服务器配置"></p>
+<p>在Global Tool Config配置jdk,git</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-c3d6c9a0897b1b5a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Jdk以及Git安装"></p>
+<h1 id="项目配置"><a href="#项目配置" class="headerlink" title="项目配置"></a>项目配置</h1><p>新建项目,使用自有构建模式<br><img src="http://upload-images.jianshu.io/upload_images/2083649-59ba19827f5435b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="项目类型选择"></p>
+<p>指定工作目录,和保持构建的天数,及最大个数,自定义目录</p>
+<blockquote>
+<p>注意: 如果使用自定义工作空间,要考虑目录对当前是否有写入的权限,<br><img src="http://upload-images.jianshu.io/upload_images/2083649-99d62727fde70207.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="项目配置"></p>
+</blockquote>
+<p>源码管理使用http地址,也可以使用ssh要配key较麻烦<br><img src="http://upload-images.jianshu.io/upload_images/2083649-8b1a1e0e4bc04cef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="GitLab项目配置"></p>
+<p>构建触发器,配置gitlab的webhook,有push变化则自动构建打包,指定对某一个分支有效:<br><img src="http://upload-images.jianshu.io/upload_images/2083649-4ffba65d72bad09e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="GitLab触发配置"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-b6b873d4b8a8bb68.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="GitLab的Webhook配置"></p>
+<p>周期性触发器:</p>
+<blockquote>
+<p>Build periodically指周期性构建（Provides a cron-like feature to periodically execute this project.）</p>
+<p>Poll SCM指周期性扫描远程git repository，当有变化时进行构建（Configure Jenkins to poll changes in SCM.）</p>
+</blockquote>
+<p>日期定义</p>
+<blockquote>
+<p>Cron表达式字符串的格式为“分 小时 日 月 星期 年”，其中“年”是可选的，其余5个字段是必须的。</p>
+<p>区别（1）没有秒 （2）星期的取值范围是0-6（SUN-SAT）</p>
+<p>字段取值范围通配符分0-59<em> / , -时0-59</em> / , -日1-31<em> / , - ? L W月1-12 or JAN-DEC</em> / , -星期0-6 or SUN-SAT<em> / , - ? L #年1970–2099</em> / , -</p>
+<p>例子:</p>
+<p><em>/5 </em> <em> </em> *  // 每5分钟</p>
+<p>H/5 <em> </em> <em> </em>    // 每5分钟 推荐</p>
+<p>5 <em> </em> <em> </em>    // 每小时的第5分钟</p>
+<p>0 8 <em> </em> *    // 每天8点</p>
+<p>0 16,18,20,22 <em> </em> *    // 每天的16点、18点、20点、22点</p>
+<p>0 1,18 <em> </em> *    // 每天的1点和18点</p>
+<p>03 09 <em> </em> 1-5    // 工作日（周日到周五）的9点3分</p>
+<p>59 23 <em> </em> 1-5 或者 @midnight    // 工作日（周日到周五）的9点3分</p>
+<p>0 20 <em> </em> 1-5</p>
+</blockquote>
+<p>H 20 <em> </em> 1-5 周一到周五的每晚8点自动构建<br><img src="http://upload-images.jianshu.io/upload_images/2083649-7ff86e40cb556c71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="周期性触发配置"></p>
+<h1 id="自定义环境变量获取Git-Log"><a href="#自定义环境变量获取Git-Log" class="headerlink" title="自定义环境变量获取Git Log"></a>自定义环境变量获取Git Log</h1><blockquote>
+<p>构建触发器配置完成后,我们还可以通过Environment Injector Plugin(环境变量注入插件),目前用于获取gitLog,并传递给Fir.im上传信息).</p>
+</blockquote>
+<p>要先在Properties File Path 路径下创建一个对应的文件,否则改插件会报错找不到文件,名字可以自定义,但是要和Script Content的脚本内容中done&gt; 后面的文件及路径一致.<br><img src="http://upload-images.jianshu.io/upload_images/2083649-4c36eb4c4654bbc8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置环境变量脚本"></p>
+<p>我这里用于测试后期,只需要显示昨天Git提交的信息:</p>
+<p>GIT_CHANGE_LOG=$(git log –after=”yesterday” –pretty=format:”%s”)</p>
+<p>echo “GIT_CHANGE_LOG=$(git log –after=”yesterday” –pretty=format:”%s” | while read line</p>
+<p>do </p>
+<p>echo $line\\\\n | tr -d \n</p>
+<p>done)”  ${WORKSPACE}/gitLogFile.properties</p>
+<p>关于Git log的高级用法可以参考以下两篇文章:</p>
+<p><a href="http://www.cnblogs.com/BeginMan/p/3577553.html" title="博客园-Git log高级用法" target="_blank" rel="external">博客园-Git log高级用法</a></p>
+<p><a href="https://github.com/geeeeeeeeek/git-recipes/wiki/5.3-Git-log%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95" title="Github-Git log 高级用法" target="_blank" rel="external">Github-Git log 高级用法</a></p>
+<p>在构建中配置刚刚的文件路径,用户读取里面的环境变量打<br><img src="http://upload-images.jianshu.io/upload_images/2083649-ae552e1a05117ec1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="在构建配置文件路径"></p>
+<p>然后就可以在Fir插件上使用刚刚设置的环境变量${GIT_CHANGE_LOG}<br><img src="http://upload-images.jianshu.io/upload_images/2083649-aed8a25d8e40d731.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="使用环境变量 ${GIT_CHAGE_LOG}"></p>
+<blockquote>
+<p>构建分为Android和iOS构建,放在后面讲,先讲公共流程</p>
+</blockquote>
+<p>构建期还可以通过Sonar来进行代码质量检查,配置源码路径,支持java,oc,swift,php,javascript</p>
+<blockquote>
+<p>sonar.projectKey=xxx_Android_Key</p>
+<p>sonar.projectName=xxx_Android_Name</p>
+<p>sonar.projectVersion=$BUILD_NUMBER</p>
+<p>sonar.sourceEncoding=UTF-8</p>
+<p>sonar.sources=/Users/jz_mac_mini/xxx/xxx/app/src/main 静态代码目录(必选)</p>
+<p>sonar.java.libraries=/Users/jz_mac_mini/xxx/xxx/app/libs/ 第三方库目录(必选)</p>
+<p>sonar.java.binaries=/Users/jz_mac_mini/xxx/xxx/app/build/intermediates/classes/production/ 编译后的代码目录(必选)</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-b8b850104d5072e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="项目Sonar配置"></p>
+<p>可以通过Sonar的后台查看代码分析<br><img src="http://upload-images.jianshu.io/upload_images/2083649-98889ea0a711aa70.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Sonar分析结果后台"></p>
+<p>构建后使用Fir.im发布,先安装ruby,</p>
+<blockquote>
+<p>$ gem sources –remove <a href="https://rubygems.org/" target="_blank" rel="external">https://rubygems.org/</a> $ gem sources -a <a href="https://ruby.taobao.org/" target="_blank" rel="external">https://ruby.taobao.org/</a> $ gem sources -l <strong><em> CURRENT SOURCES </em></strong> <a href="https://ruby.taobao.org" target="_blank" rel="external">https://ruby.taobao.org</a> # 请确保只有 ruby.taobao.org, 如果有其他的源, 请 remove 掉</p>
+<p>Mac OS X 10.11 以后的版本, 由于10.11引入了 rootless , 无法直接安装 fir-cli, 有以下三种解决办法:</p>
+<ol>
+<li>使用 Homebrew 及 RVM 安装 Ruby, 再安装 fir-cli(推荐)</li>
+</ol>
+<h1 id="Install-Homebrew"><a href="#Install-Homebrew" class="headerlink" title="Install Homebrew:"></a>Install Homebrew:</h1><p>$ ruby -e “$(curl -fsSL <a href="https://raw.githubusercontent.com/Homebrew/install/master/install" target="_blank" rel="external">https://raw.githubusercontent.com/Homebrew/install/master/install</a>)”</p>
+<h1 id="Install-RVM"><a href="#Install-RVM" class="headerlink" title="Install RVM:"></a>Install RVM:</h1><p>$ \curl -sSL <a href="https://get.rvm.io" target="_blank" rel="external">https://get.rvm.io</a> | bash -s stable –ruby</p>
+<p>$ gem install fir-cli</p>
+</blockquote>
+<p>然后再通过插件配置Fir.im的账号,以及提交的fir的信息</p>
+<blockquote>
+<p>jenkins的build版本为:  $BUILD_NUMBER</p>
+<p>git的提交版本  号 为 :  $GIT_COMMIT</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-a0282c1dc4955625.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Fir.im配置"></p>
+<p>可以通过bearychat插件来配置通知群组,在项目中配置<br><img src="http://upload-images.jianshu.io/upload_images/2083649-5dee6977d906121e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Bearychat项目配置"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-f4b439f3a4c49603.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Bearychat通知打包结果"></p>
+<p>可以配置邮件通知,使用插件来配置email-ext-plugin,可以定制发送的内容,</p>
+<p>先配置smtp服务器</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-5bf68c263b129b41.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置SMTP服务器"><br>然后指定发给哪些邮箱地址,以及定制发送的内容</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-157f4d1ceafdd28a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="邮件发送内容"></p>
+<p>也可以使用自带的邮件通知,要先制定系统管理员邮件地址<br><img src="http://upload-images.jianshu.io/upload_images/2083649-70038b72c58536ab.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置管理员邮件地址"></p>
+<p>然后再配置邮件服务器smtp<br><img src="http://upload-images.jianshu.io/upload_images/2083649-602532dab5417094.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置自带邮件SMTP服务器"></p>
+<h1 id="Android端构建配置"><a href="#Android端构建配置" class="headerlink" title="Android端构建配置"></a>Android端构建配置</h1><hr>
+<p>Android SDK配置<br><img src="http://upload-images.jianshu.io/upload_images/2083649-907664fe4815d8e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Android SDK配置"></p>
+<p>gradle可以指定本地的路径,也可以使用在线版本自动安装<br><img src="http://upload-images.jianshu.io/upload_images/2083649-9ce14831d2c90d70.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Gradle配置"></p>
+<p>构建,可以通过Tasks来指定任务<br><img src="http://upload-images.jianshu.io/upload_images/2083649-fc0ac2fa2e4c20c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Task任务配置"></p>
+<h1 id="iOS端构建配置"><a href="#iOS端构建配置" class="headerlink" title="iOS端构建配置"></a>iOS端构建配置</h1><hr>
+<p>目前我们使用的是Xcode默认配置打包,不用jenkins上配置的证书及PP文件.有几个关键点要注意的.</p>
+<p>首先要在Xcode把项目中Projec和Target的Code Signing 设置为iOS Developer,以及把PP设置为Automatic.<br><img src="http://upload-images.jianshu.io/upload_images/2083649-c9b39ae10a9c40ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Code Sign和PP文件设置"></p>
+<p>然后在Product-&gt;Scheme-&gt;Manage Schemes 把项目设置为Shared,第三方库的不用设置<br><img src="http://upload-images.jianshu.io/upload_images/2083649-84e9d7c219bd9b3c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="scheme设置"></p>
+<p>系统管理-&gt;找到Keychain and Provisioning Profiles Management</p>
+<blockquote>
+<p>点击选择文件从本地选取Keychain,路径为:/Users/用户名/Library/Keychains/login.keychain</p>
+</blockquote>
+<p>这里我们目前的做法是只配置login.keychain,然后jenkins的机子上安装Code Signing证书,再在xcode项目上fix issue,就能够为我们自动生成一个PP文件,名为-iOS Team Provisioning Profiles : xxxx, 而且当我们在开发者中心更新设备列表的时候,此PP文件是会自动加入的.<br><img src="http://upload-images.jianshu.io/upload_images/2083649-6cf715e14895ceac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Keychain and Provisioning Profiles配置"></p>
+<h1 id="针对CocoaPods设置"><a href="#针对CocoaPods设置" class="headerlink" title="针对CocoaPods设置"></a>针对CocoaPods设置</h1><hr>
+<p>如果项目是使用CocoaPods来管理的,还要针对xcworkspace进行build的话,还要额外进行写设置</p>
+<p>如果构建是出现编码错误的可以在~/.bash_profile文件加上一句</p>
+<blockquote>
+<p>export LC_ALL=”en_US.UTF-8”</p>
+</blockquote>
+<p>Xcode构建前,先用shell跑一遍pod install,我这里会出现pod: command not found 的错误,所以要在前面加上一句</p>
+<blockquote>
+<p>#!/bin/bash -l</p>
+<p>pod install –verbose –no-repo-update</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/2083649-8e81bbcba58e0818.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="shell配置"></p>
+<p>配置Workspace,红色的地方可以填上target名称,此处参考了<a href="http://www.pluto-y.com/jenkins-xcode-configuration/" title="章华龙的文章" target="_blank" rel="external">章华龙的文章</a>.<br><img src="http://upload-images.jianshu.io/upload_images/2083649-a3c2636440e185ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置Workspace"></p>
+<p>配置Workspace</p>
+<h1 id="非CocoaPods设置"><a href="#非CocoaPods设置" class="headerlink" title="非CocoaPods设置"></a>非CocoaPods设置</h1><hr>
+<p>配置Xcode<br><img src="http://upload-images.jianshu.io/upload_images/2083649-9196bc98b0d65a5e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="配置Xcode构建"></p>
+<p>这里可以填入keychain来解锁<br><img src="http://upload-images.jianshu.io/upload_images/2083649-94e742c8dba0e7e2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="解锁Keychain"></p>
+<p>整个构建环境完成.</p>
+<p>后期我们打算优化Sonar的检测分析,以及配置单元测试,UI测试,条件测试覆盖率等,继续往持续交付,持续部署的路上走!</p>
+<p>Keep Going!</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+            <div class="content">
+               这里写留言或版权声明：<a href="/2016/11/02/Jenkins-搭建/" target="_blank" rel="external">https://yidejia.github.io/2016/11/02/Jenkins-搭建/</a>
+            </div>
+            <footer>
+                <a href="https://yidejia.github.io">
+                    <img src="/img/logo.jpg" alt="伊的家技术部">
+                    伊的家技术部
+                </a>
+            </footer>
+        </blockquote>
+
+        
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jenkins/">Jenkins</a></li></ul>
+
+
+            
+            <div class="post-share-wrap">
+                <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+                <a href="javascript:;" id="share-fab" class="post-share-fab waves-effect waves-circle">
+                    <i class="icon icon-share-alt icon-lg"></i>
+                </a>
+            </div>
+            
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/11/02/Hexo + GitHub 搭建属于个人或团队的技术博客/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Hexo + GitHub 搭建属于个人或团队的技术博客</h4>
+      </a>
+    </div>
+  
+
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="Jenkins-搭建" data-title="Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境" data-url="https://yidejia.github.io/2016/11/02/Jenkins-搭建/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.1.5"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'wingwing1112', theme: 'none'}
+</script>
+
+
+
+
+</article>
+
+
+</div>
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境",
+    pic: "/img/logo.jpg",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "https://yidejia.github.io/2016/11/02/Jenkins-搭建/"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.1.5"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.1.5"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -70,5 +70,6 @@ theme: indigo_
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: git@github.com:yidejia/ydj.github.io
-  branch: master
+  repository: git@github.com:yidejia/ydj.github.io 
+  branch: master 
+

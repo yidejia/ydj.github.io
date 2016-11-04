@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>仿UC浏览器首页下拉动画及实现分析 | 伊的家技术博客 | 自驱自律自组织</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="曹堃,动画">
+  <meta name="description" content="动画效果
+经常用UC看到首页有这么一个动画，就仿造写了一下。
+实现分析1.画曲线的动画这个一眼看去就想到用贝塞尔曲线画，来看贝塞尔曲线方法，给出两个定点，和一个控制点就可以画。1CGContextAddQuadCurveToPoint(context, 控制点x, 控制点y, 目标点x, 目标点y);
+于是按照下图，两个黄色的点是定点，绿色的是控制点，于是画出了这样的图。
+看左边的图，中间有大片空">
+<meta property="og:type" content="article">
+<meta property="og:title" content="仿UC浏览器首页下拉动画及实现分析">
+<meta property="og:url" content="https://yidejia.github.io/2016/11/04/caokun_UC_animation/index.html">
+<meta property="og:site_name" content="伊的家技术博客">
+<meta property="og:description" content="动画效果
+经常用UC看到首页有这么一个动画，就仿造写了一下。
+实现分析1.画曲线的动画这个一眼看去就想到用贝塞尔曲线画，来看贝塞尔曲线方法，给出两个定点，和一个控制点就可以画。1CGContextAddQuadCurveToPoint(context, 控制点x, 控制点y, 目标点x, 目标点y);
+于是按照下图，两个黄色的点是定点，绿色的是控制点，于是画出了这样的图。
+看左边的图，中间有大片空">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-f79c05d1173662a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-6c714da4d784ba32.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-05b3633524b49863.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-33f2c618ab9c3e46.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-dd0d035e4b25f762.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-11-04T08:18:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="仿UC浏览器首页下拉动画及实现分析">
+<meta name="twitter:description" content="动画效果
+经常用UC看到首页有这么一个动画，就仿造写了一下。
+实现分析1.画曲线的动画这个一眼看去就想到用贝塞尔曲线画，来看贝塞尔曲线方法，给出两个定点，和一个控制点就可以画。1CGContextAddQuadCurveToPoint(context, 控制点x, 控制点y, 目标点x, 目标点y);
+于是按照下图，两个黄色的点是定点，绿色的是控制点，于是画出了这样的图。
+看左边的图，中间有大片空">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2764502-f79c05d1173662a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="伊的家技术博客" type="application/atom+xml">
+  
+  <meta name="summary" content="伊的家">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css?v=1.1.5">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar"><img src="/img/logo.jpg"></a>
+        <hgroup class="introduce">
+          <h5 class="nickname">伊的家技术部</h5>
+          <a href="mailto:developer@yidejia.com" title="developer@yidejia.com" class="mail">developer@yidejia.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yidejia" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>伊的家技术博客 &copy; 2016</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">仿UC浏览器首页下拉动画及实现分析</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">仿UC浏览器首页下拉动画及实现分析</h1>
+        
+        
+
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#动画效果"><span class="post-toc-number">1.</span> <span class="post-toc-text">动画效果</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#实现分析"><span class="post-toc-number">2.</span> <span class="post-toc-text">实现分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-画曲线的动画"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">1.画曲线的动画</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-页面结构"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">2.页面结构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-不规则事件点击，事件穿透"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">3.不规则事件点击，事件穿透</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-后期改进"><span class="post-toc-number">2.0.4.</span> <span class="post-toc-text">4.后期改进</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-caokun_UC_animation" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">仿UC浏览器首页下拉动画及实现分析</h1>
+        <div class="post-meta">
+            <time datetime="2016-11-04T08:12:55.000Z" itemprop="datePublished" class="post-time">
+  2016-11-04
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/移动端/">移动端</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="动画效果"><a href="#动画效果" class="headerlink" title="动画效果"></a>动画效果</h1><p><img src="http://upload-images.jianshu.io/upload_images/2764502-f79c05d1173662a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图1"></p>
+<p>经常用UC看到首页有这么一个动画，就仿造写了一下。</p>
+<h1 id="实现分析"><a href="#实现分析" class="headerlink" title="实现分析"></a>实现分析</h1><h3 id="1-画曲线的动画"><a href="#1-画曲线的动画" class="headerlink" title="1.画曲线的动画"></a>1.画曲线的动画</h3><p>这个一眼看去就想到用贝塞尔曲线画，来看贝塞尔曲线方法，给出两个定点，和一个控制点就可以画。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CGContextAddQuadCurveToPoint(context, 控制点x, 控制点y, 目标点x, 目标点y);</div></pre></td></tr></table></figure></p>
+<p>于是按照下图，两个黄色的点是定点，绿色的是控制点，于是画出了这样的图。<br><img src="http://upload-images.jianshu.io/upload_images/2764502-6c714da4d784ba32.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图2"></p>
+<p>看左边的图，中间有大片空白，看起来很浪费屏幕空间，用户体验不太好，于是想着怎么让贝塞尔曲线过某个定点，比如让曲线过绿色的定点，而不是把控制点设在绿色的位置。</p>
+<p>重诉一下，现有的方法是给出两个定点和一个控制点，能画一条曲线。<br>现在是要，<strong>已知两个定点，和过另外一个定点D，画一条曲线。</strong></p>
+<p>我现在想让这条曲线过绿色的点，就像下图那样，求控制点坐标是多少？</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-05b3633524b49863.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图3"></p>
+<p>看下图，求出控制点坐标的过程<br><img src="http://upload-images.jianshu.io/upload_images/2764502-33f2c618ab9c3e46.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图4"></p>
+<p>由上图就得出了控制点的坐标，然后就可以画出“图3”的样子了，实际中我觉得图3贴太紧了，也不美观，于是 yc 乘了个0.6的系数，即 yc = 0.6 * yc，就看起来比较顺眼了。</p>
+<h3 id="2-页面结构"><a href="#2-页面结构" class="headerlink" title="2.页面结构"></a>2.页面结构</h3><p>页面结构大概是这样，底下的 tableView 铺满整个 view，然后蓝色的headerView 加在 tableView 的上面，不是加 tableView.tableHeaderView 上面哦，至于为什么你加加看就知道了。会跟着 tableview 动</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-dd0d035e4b25f762.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图5"></p>
+<h3 id="3-不规则事件点击，事件穿透"><a href="#3-不规则事件点击，事件穿透" class="headerlink" title="3.不规则事件点击，事件穿透"></a>3.不规则事件点击，事件穿透</h3><p>headerView 上有一个头像，是可以点击的，其他地方的点击事件要传给底下的 tableView 也叫事件穿透，通过修改 hitTest 可以实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event;</div></pre></td></tr></table></figure></p>
+<p>hitTest 主要用来做事件分发的，可以实现不规则点击，它在整个 view 结构上是递归的，深度优先的，今天不讲算法，因为 hitTest 太厉害，不规则点击用 pointInside 函数就够了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event;</div></pre></td></tr></table></figure></p>
+<p>这个函数会被 hitTest 调用，返回 false 表示点击的不是自己，返回 true 表示点击的是自己。<br>那么，我只要判断点击的 point 在不在头像的那个圆圈里面就可以了，就是判断点在不在圆内，高中讲过了，point 到圆心的距离小于半径就表示在了，那么返回 true 就行。具体的还是看代码吧。<br>如果有多个控件，需要自己确定每个控件的点击区域。</p>
+<p>最后还是上个代码 <a href="https://github.com/hehe520/PullAnimation" target="_blank" rel="external">下载地址</a>，下载慢慢看吧。</p>
+<h3 id="4-后期改进"><a href="#4-后期改进" class="headerlink" title="4.后期改进"></a>4.后期改进</h3><p>写完这个博客突然想到一个还要改的地方，就是当用户手指松开的时候，scrollViewWillEndDragging，这个方法内判断一下，contentOffset.y 值，如果超过多少值，那么自动回调一个 block，可实现下拉刷新。</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+            <div class="content">
+               这里写留言或版权声明：<a href="/2016/11/04/caokun_UC_animation/" target="_blank" rel="external">https://yidejia.github.io/2016/11/04/caokun_UC_animation/</a>
+            </div>
+            <footer>
+                <a href="https://yidejia.github.io">
+                    <img src="/img/logo.jpg" alt="伊的家技术部">
+                    伊的家技术部
+                </a>
+            </footer>
+        </blockquote>
+
+        
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动画/">动画</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/曹堃/">曹堃</a></li></ul>
+
+
+            
+            <div class="post-share-wrap">
+                <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+                <a href="javascript:;" id="share-fab" class="post-share-fab waves-effect waves-circle">
+                    <i class="icon icon-share-alt icon-lg"></i>
+                </a>
+            </div>
+            
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/11/04/caokun_memory/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">什么是计算机内存？</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/11/04/caokun_socket/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">通俗讲解股票类app - TCP网络通信层设计</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="caokun_UC_animation" data-title="仿UC浏览器首页下拉动画及实现分析" data-url="https://yidejia.github.io/2016/11/04/caokun_UC_animation/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.1.5"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'wingwing1112', theme: 'none'}
+</script>
+
+
+
+
+</article>
+
+
+</div>
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "仿UC浏览器首页下拉动画及实现分析",
+    pic: "/img/logo.jpg",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "https://yidejia.github.io/2016/11/04/caokun_UC_animation/"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.1.5"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.1.5"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

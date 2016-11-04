@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>什么是计算机内存？ | 伊的家技术博客 | 自驱自律自组织</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="曹堃,内存">
+  <meta name="description" content="计算机存储体系先来看这张计算机存储体系结构图。
+从上图可以看到，越在上面的访问速度越快，但是容量越小，今天要说的就是内存那个环节。
+内存是什么
+内存是可以记录二进制数据一种器件，它是连续的结构，可以随机读写，断电会丢失数据，所有程序必须从磁盘加载到内存中才能运行。
+
+硬件实现简单说一下，二进制数据的每一个bit由一种叫电容器的元件记录，有电子表示1，没电子表示0。可以想象一个4G的内存条，上面有3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是计算机内存？">
+<meta property="og:url" content="https://yidejia.github.io/2016/11/04/caokun_memory/index.html">
+<meta property="og:site_name" content="伊的家技术博客">
+<meta property="og:description" content="计算机存储体系先来看这张计算机存储体系结构图。
+从上图可以看到，越在上面的访问速度越快，但是容量越小，今天要说的就是内存那个环节。
+内存是什么
+内存是可以记录二进制数据一种器件，它是连续的结构，可以随机读写，断电会丢失数据，所有程序必须从磁盘加载到内存中才能运行。
+
+硬件实现简单说一下，二进制数据的每一个bit由一种叫电容器的元件记录，有电子表示1，没电子表示0。可以想象一个4G的内存条，上面有3">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-3be9f5b75d63ac7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-d1816a000ab1d8c1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-6314d7554e7870ba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-6ff72ec281f886f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-eed8719f933779fb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-4b7e0ebddaf9e75e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-47d5a3076709b55d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-11-04T08:21:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="什么是计算机内存？">
+<meta name="twitter:description" content="计算机存储体系先来看这张计算机存储体系结构图。
+从上图可以看到，越在上面的访问速度越快，但是容量越小，今天要说的就是内存那个环节。
+内存是什么
+内存是可以记录二进制数据一种器件，它是连续的结构，可以随机读写，断电会丢失数据，所有程序必须从磁盘加载到内存中才能运行。
+
+硬件实现简单说一下，二进制数据的每一个bit由一种叫电容器的元件记录，有电子表示1，没电子表示0。可以想象一个4G的内存条，上面有3">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2764502-3be9f5b75d63ac7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="伊的家技术博客" type="application/atom+xml">
+  
+  <meta name="summary" content="伊的家">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css?v=1.1.5">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar"><img src="/img/logo.jpg"></a>
+        <hgroup class="introduce">
+          <h5 class="nickname">伊的家技术部</h5>
+          <a href="mailto:developer@yidejia.com" title="developer@yidejia.com" class="mail">developer@yidejia.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yidejia" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>伊的家技术博客 &copy; 2016</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">什么是计算机内存？</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">什么是计算机内存？</h1>
+        
+        
+
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#计算机存储体系"><span class="post-toc-number">1.</span> <span class="post-toc-text">计算机存储体系</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#内存是什么"><span class="post-toc-number">2.</span> <span class="post-toc-text">内存是什么</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#内存空间管理策略"><span class="post-toc-number">3.</span> <span class="post-toc-text">内存空间管理策略</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#虚拟内存地址与实际物理地址"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">虚拟内存地址与实际物理地址</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#段式管理"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">段式管理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#页式管理"><span class="post-toc-number">3.1.2.</span> <span class="post-toc-text">页式管理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#页面置换算法"><span class="post-toc-number">3.1.3.</span> <span class="post-toc-text">页面置换算法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#段页式管理"><span class="post-toc-number">3.1.4.</span> <span class="post-toc-text">段页式管理</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-caokun_memory" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">什么是计算机内存？</h1>
+        <div class="post-meta">
+            <time datetime="2016-11-04T08:21:55.000Z" itemprop="datePublished" class="post-time">
+  2016-11-04
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/移动端/">移动端</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="计算机存储体系"><a href="#计算机存储体系" class="headerlink" title="计算机存储体系"></a>计算机存储体系</h1><p>先来看这张计算机存储体系结构图。<br><img src="http://upload-images.jianshu.io/upload_images/2764502-3be9f5b75d63ac7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="计算机存储体系.png"></p>
+<p>从上图可以看到，越在上面的访问速度越快，但是容量越小，今天要说的就是内存那个环节。</p>
+<h1 id="内存是什么"><a href="#内存是什么" class="headerlink" title="内存是什么"></a>内存是什么</h1><ul>
+<li><p>内存是可以记录二进制数据一种器件，它是连续的结构，可以随机读写，断电会丢失数据，所有程序必须从磁盘加载到内存中才能运行。</p>
+</li>
+<li><p>硬件实现简单说一下，二进制数据的每一个bit由一种叫电容器的元件记录，有电子表示1，没电子表示0。可以想象一个4G的内存条，上面有34359738368个这样微小的元件。电容容易丢失电子，所以每64ms必须对内存充电（内存刷新），充电过程中，不允许CPU访问数据，会造成任务延迟。</p>
+</li>
+</ul>
+<h1 id="内存空间管理策略"><a href="#内存空间管理策略" class="headerlink" title="内存空间管理策略"></a>内存空间管理策略</h1><ul>
+<li>上面说了内存是一个<strong>连续的线性结构</strong>，一个4G的内存有很多个电容，把他们线性排在一起，那么就有0~34359738367个可以存bit的空位，计算机一般把8个bit合成一个byte存放，那么就有0~4294967295个byte，写成16进制就是 0x0 ~ 0xFFFFFFFF个地址，这个就是内存地址了，每个地址里面可以取出一个字节的数据。</li>
+</ul>
+<blockquote>
+<p>现在有0xFFFFFFFF个地址，人们是怎么利用操作系统去管理和分配这些地址给程序使用的呢？</p>
+</blockquote>
+<ul>
+<li>为了方便说明问题，我把内存地址用10进制表示，转成16进制也是一样的，16进制不太方便人脑计算。我不用4G的内存讲，因为太多了，用0到99的内存空间即可说明问题。我尽量用通俗的语言说明问题，没有很复杂的概念，复杂的概念请翻看《操作系统原理》。</li>
+</ul>
+<h2 id="虚拟内存地址与实际物理地址"><a href="#虚拟内存地址与实际物理地址" class="headerlink" title="虚拟内存地址与实际物理地址"></a>虚拟内存地址与实际物理地址</h2><ul>
+<li><p>在说怎么管理内存之前，先要说一下虚拟内存地址，最开始人们在程序直接使用实际的物理地址，如下图：<br>假设程序a第一次启动被装载在1的位置，第二次启动装载在31的位置。<br>程序a中有段代码 jmp 3，想去执行3那里的目标代码。<br><img src="http://upload-images.jianshu.io/upload_images/2764502-d1816a000ab1d8c1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="物理地址.png"><br>显然第一次jmp是对的，但第二次操作系统把装在了31的位置，显然目标代码应该是33了，就应该把程序改为jmp 33，否则就出错了。<br><strong>这就是直接使用物理地址的弊端</strong>，每次启动都要重新改代码，或者把所有跳转的地方都+30，很麻烦。所以现代程序都不直接使用物理地址，而是用了虚拟地址，如下图<br><img src="http://upload-images.jianshu.io/upload_images/2764502-6314d7554e7870ba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="地址转换.png"><br>使用了虚拟地址后，每个程序就认为自己是从0地址开始的就好了，不管加载到哪个地方，都不用在修改代码，<strong>通过一个段表就可以把虚拟地址转为实际的物理地址</strong>。</p>
+</li>
+<li><p>在编译器debug中可以看到 0x0012fee8 这些都是虚拟地址，物理地址操作系统不允许直接访问了。<br><img src="http://upload-images.jianshu.io/upload_images/2764502-6ff72ec281f886f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="vc6.0.png"></p>
+</li>
+</ul>
+<h3 id="段式管理"><a href="#段式管理" class="headerlink" title="段式管理"></a>段式管理</h3><ul>
+<li>最开始人们用段式管理，但是段式管理会产生内存碎片，过程如下图<br><img src="http://upload-images.jianshu.io/upload_images/2764502-eed8719f933779fb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="内存碎片.png"><br>当程序c要加载进内存的时候，程序b前面的空间不够了，只能从b后面分配，于是b前面的空间就不能给c利用，成为了<strong>内存碎片</strong>。</li>
+<li>操作系统为了避免这种情况，充分利用内存空间，当内存不够的时候，会采取<strong>内存紧缩</strong>，就是把所有程序都往左边挪动，全部紧紧的排在一起，但是实际中对4GB的内存空间进行紧缩的时候，需要5秒左右的时间，计算机经常卡机5秒你能忍？</li>
+<li>程序c分配内存的策略有首先适配法，最佳适配法等方法，考虑到篇幅就不展开讲了，我上面用的就是首先适配法，从左到右首次找到一个合适位置就分配。</li>
+</ul>
+<h3 id="页式管理"><a href="#页式管理" class="headerlink" title="页式管理"></a>页式管理</h3><ul>
+<li>由于段式管理的缺点（外部碎片，内存紧缩），人们后来发明了页式管理，通俗来说，页式管理就是把一定大小的物理空间当做一个页框，整个内存中就有很多个这样的页框，比如0到99的内存空间，按10个字节为一个页框，那么整个内存就分成了10页框，0到9是第0个页框，如下图：<br><img src="http://upload-images.jianshu.io/upload_images/2764502-4b7e0ebddaf9e75e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="页框.png"><br>按照页式管理划分空间后，一个程序用一个页框<strong>要么使用页框全部空间，要么不能使用，不能说只用一点点</strong>，如果一个程序用不上那么多空间，也必须拿完，于是段式管理的<strong>外部碎片和内存紧缩</strong>的问题被解决了，提高了内存利用率，但是又产生<strong>内存内部碎片</strong>。</li>
+<li>程序的页和页框的大小是一样的，页框大小如何确定？如果页框太大，产生的内部碎片也大，如果页框太小，导致页表变大，查找速度降低。例如4GB的内存，按照4KB分为一页，4GB / 4KB = 1048576项，查找起来自然慢了。</li>
+</ul>
+<hr>
+<p>虚拟地址到物理地址转换过程<br><img src="http://upload-images.jianshu.io/upload_images/2764502-47d5a3076709b55d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="地址转换.png"><br>上图还有个<strong>在不在位</strong>，这个位表示如果程序的页在页框中，那么直接转换，如果不在页框中，那么引发一个<strong>缺页中断</strong>，操作系统去磁盘上把缺失的页加载进内存，然后程序才继续往下运行。这里有个重点，<strong>运行中的程序不一定全部在内存中，也有可能在磁盘上</strong>，在磁盘上的那部分叫做<strong>虚拟内存！</strong>，那究竟程序的哪些页面在内存中，哪些页面在磁盘上，这里就涉及到<strong>页面置换算法</strong></p>
+<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><p>一个程序的部分页面在内存中，部分页面在磁盘上，究竟怎么确定这些页面？<br>我选几个来说</p>
+<ul>
+<li>先进先出（FIFO）<br>最简单的，最先进来的，就最先淘汰出去。缺点：有些频繁访问的页面也可能淘汰出去。</li>
+<li>二次机会（SC）<br>最先进来的页面不一定最先出去，如果这个页面的访问标志是1，那么把它置为0，再给它一次机会，如果页面访问标志0，那么才置换出去。</li>
+<li>最近未使用（NRU）<br>每个页面有两个标志位，标记是否访问，是否修改，显然那么没有怎么访问，没有修改的页面会被淘汰出去。</li>
+<li>最近最少使用（LRU）<br>这个也很好理解，每个页面有个计数器，访问一次就加1，显然把访问次数很少的那些优先淘汰。</li>
+<li>此外还有老化算法，工作集算法，等等，限于篇幅（其实是我写累了）就不详细叙说了，我已经写了个实验代码，在<a href="https://github.com/hehe520/Data-structure-and-algorithm/tree/master/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95/%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E5%92%8C%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95" target="_blank" rel="external">这里</a>可以看到。</li>
+</ul>
+<h3 id="段页式管理"><a href="#段页式管理" class="headerlink" title="段页式管理"></a>段页式管理</h3><p>最后是段页式管理，结合了段式页式的优缺点，把程序先分段，在每个段内再分页，来管理内存，windows操作系统就是用这个方法管理的，当然实际中更加复杂，绝对没有我说的这么简单，我只是通俗的说清原理，详情请看《操作系统原理》</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+            <div class="content">
+               这里写留言或版权声明：<a href="/2016/11/04/caokun_memory/" target="_blank" rel="external">https://yidejia.github.io/2016/11/04/caokun_memory/</a>
+            </div>
+            <footer>
+                <a href="https://yidejia.github.io">
+                    <img src="/img/logo.jpg" alt="伊的家技术部">
+                    伊的家技术部
+                </a>
+            </footer>
+        </blockquote>
+
+        
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存/">内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/曹堃/">曹堃</a></li></ul>
+
+
+            
+            <div class="post-share-wrap">
+                <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+                <a href="javascript:;" id="share-fab" class="post-share-fab waves-effect waves-circle">
+                    <i class="icon icon-share-alt icon-lg"></i>
+                </a>
+            </div>
+            
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/11/04/caokun_UC_animation/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">仿UC浏览器首页下拉动画及实现分析</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="caokun_memory" data-title="什么是计算机内存？" data-url="https://yidejia.github.io/2016/11/04/caokun_memory/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.1.5"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'wingwing1112', theme: 'none'}
+</script>
+
+
+
+
+</article>
+
+
+</div>
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "什么是计算机内存？",
+    pic: "/img/logo.jpg",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "https://yidejia.github.io/2016/11/04/caokun_memory/"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.1.5"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.1.5"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

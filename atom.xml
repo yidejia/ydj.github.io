@@ -83,11 +83,11 @@
   </entry>
   
   <entry>
-    <title>仿UC浏览器首页下拉动画及实现分析</title>
+    <title>iOS - 仿UC浏览器首页下拉动画及实现分析</title>
     <link href="https://yidejia.github.io/2016/11/04/caokun_UC_animation/"/>
     <id>https://yidejia.github.io/2016/11/04/caokun_UC_animation/</id>
     <published>2016-11-04T08:12:55.000Z</published>
-    <updated>2016-11-04T08:18:32.000Z</updated>
+    <updated>2016-11-04T08:29:21.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="动画效果"><a href="#动画效果" class="headerlink" title="动画效果"></a>动画效果</h1><p><img src="http://upload-images.jianshu.io/upload_images/2764502-f79c05d1173662a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图1"></p>
 <p>经常用UC看到首页有这么一个动画，就仿造写了一下。</p>
@@ -120,6 +120,8 @@
       <category term="曹堃" scheme="https://yidejia.github.io/tags/%E6%9B%B9%E5%A0%83/"/>
     
       <category term="动画" scheme="https://yidejia.github.io/tags/%E5%8A%A8%E7%94%BB/"/>
+    
+      <category term="ios" scheme="https://yidejia.github.io/tags/ios/"/>
     
   </entry>
   

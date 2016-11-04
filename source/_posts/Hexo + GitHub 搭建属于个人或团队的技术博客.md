@@ -28,7 +28,7 @@ Hexo 的安装需要依赖 Node.js，而对博客的管理我们选择 Git，所
 
 首先我们需要通过 cURL 来安装 [nvm](https://github.com/creationix/nvm)：
 
-`$ curl https://raw.github.com/creationix/nvm/master/install.sh | sh
+`$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
 `
 
 安装完成后，重新启动终端然后执行如下命令来安装 Node.js：

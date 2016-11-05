@@ -34,7 +34,7 @@ rss: /atom.xml
 #你的头像url
 avatar: /img/logo.png
 #favicon
-favicon: /favicon.ico
+favicon: /img/logo.png
 
 # email
 email: developer@yidejia.com

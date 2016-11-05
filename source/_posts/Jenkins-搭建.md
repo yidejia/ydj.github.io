@@ -3,6 +3,7 @@ title: Jenkins+GitLab+Android+iOS+Sonar搭建持续集成环境
 date: 2016-11-02 14:12:55
 tags:
 - Jenkins
+- 黎进财
 categories:
 - 移动端
 

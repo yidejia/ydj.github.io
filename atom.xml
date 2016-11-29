@@ -1,19 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>伊的家技术博客</title>
+  <title>经传技术博客</title>
   <subtitle>自驱自律自组织</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yidejia.github.io/"/>
-  <updated>2016-11-04T08:21:04.000Z</updated>
+  <updated>2016-11-29T01:49:57.000Z</updated>
   <id>https://yidejia.github.io/</id>
   
   <author>
-    <name>伊的家技术部</name>
+    <name>经传技术部</name>
     
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>iOS - 优先队列的三种实现方式</title>
+    <link href="https://yidejia.github.io/2016/11/29/caokun_priority_queue/"/>
+    <id>https://yidejia.github.io/2016/11/29/caokun_priority_queue/</id>
+    <published>2016-11-29T08:12:55.000Z</published>
+    <updated>2016-11-29T01:49:57.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h1><p>在做一个APP的聊天功能，聊天消息走socket推过来的，每个消息有唯一的id，id随时间是增大的，聊天消息要按时间有序，不重复，不遗漏。</p>
+<p>本博客主要想说消息有序，但提到了不重复，不遗漏，也简单说一下。<br><strong>不遗漏</strong>：一种方式就是本地保存最新的消息id，请求最新数据时带上这个id，等到请求回来，才能更新最新id，注意一下边界开区间闭区间的问题就可以了，服务器应该返回 ( 本地最新id, 服务器最新id ]，这种左开右闭的区间给客户端就行。还有一种保证消息100%到达的应用层应答机制，可以在我之前的博客看到<a href="http://www.jianshu.com/p/edb50afa250e" target="_blank" rel="external">点击查看</a>。</p>
+<p><strong>不重复</strong>：有时候移动网络很差，一个请求发出去很久才响应，中间可能隔了几秒钟，这个时候，有些用户很急可能会狂点界面，比如我，导致请求重复发（实际中已做限频，狂点也不会发请求），然后回来的消息自然就有很多重复了。去重很简单了，OC 中用 NSMutableDictionary，底层是哈希表，把消息id 作为 key，加入到字典中再拿出来，重复的就没有了。但实际中数据量较小，你写两个 for 循环去重也不会有什么性能问题，理论上会更耗cpu和电量。</p>
+<h1 id="消息有序"><a href="#消息有序" class="headerlink" title="消息有序"></a>消息有序</h1><p>第一的想法是每次收到新的消息就加入到优先队列中，然后一出队就全部都是有序的了。但是 oc 中没有优先队列这种结构，甚至连队列都没有，一个变通的做法就是用 NSMutableArray 来实现队列和栈，但是用法很别扭，如果 NSMutableArray 用数组实现的话，会有大量的位移操作，效率会很低。</p>
+<p>一开始我把消息保存到 NSArray 中，每次来了新消息都执行排序+去重的操作来保证有序，数据量小就没什么问题，其实也不小，群里面聊天几十个人同时发消息，一下就重复好多次这样的操作。后来比较有空，就自己用 oc 实现了一个优先队列，方便使用，效率高，大量数据下性能也很好。</p>
+<h1 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h1><p>普通队列是先进先出的结构，优先队列是一种按照优先级大小，比如小的先出队，的一种结构。所以先进的不一定先出，它会把优先级高的先出，下面我认为id小的优先级高。要先出队。</p>
+<p>举个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">入队元素顺序：2, 3, 4, 5, 1</div><div class="line"></div><div class="line">普通队列出队：2, 3, 4, 5, 1</div><div class="line">优先队列出队：1, 2, 3, 4, 5  (有序)</div></pre></td></tr></table></figure></p>
+<p>那么如何实现优先队列？有以下三种方法</p>
+<h3 id="1-入队有序"><a href="#1-入队有序" class="headerlink" title="1.入队有序"></a>1.入队有序</h3><p>就是每加入一个元素的时候，把它移到一个“合适”的位置，举个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">队列中已经有 1, 3, 4，现在要加入 2</div><div class="line">那么把 2 移到 1，3 的中间，就是 1, 2, 3, 4</div><div class="line">这个“合适”的位置定义为：前一个元素 &lt;= 要加入的元素 &lt;= 后一个元素</div></pre></td></tr></table></figure></p>
+<p>入队已经保证有序了，那么出队就直接把第一个元素拿出来，就是最小的了。<br>显然 n 个元素的时间复杂度，入队操作 O(n)，出队操作 O(1)<br>缺点：该方法，如果有大量的入队操作比较耗时。</p>
+<h3 id="2-遍历最小的出队"><a href="#2-遍历最小的出队" class="headerlink" title="2.遍历最小的出队"></a>2.遍历最小的出队</h3><p>因为方法1的入队操作耗时，那么方法2做了个改进，入队的时候什么也不做，直接追加到尾部，出队时候去遍历数组中最小的元素出队，举个例子。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">队列中已经有 3, 1, 4，现在要加入 2</div><div class="line">那么把 2 加到尾部，就是 3, 1, 4, 2</div></pre></td></tr></table></figure></p>
+<p>出队的时候，遍历数组，找到最小的元素1，出队就行了<br>显然，入队操作 O(1)，出队操作 O(n)<br>缺点：如果有大量出队操作比较耗时</p>
+<h3 id="3-二叉堆"><a href="#3-二叉堆" class="headerlink" title="3.二叉堆"></a>3.二叉堆</h3><p>由于上面两种方法都有缺点，最后用<strong>堆</strong>这种数据结构来实现优先队列</p>
+<h4 id="什么是堆？"><a href="#什么是堆？" class="headerlink" title="什么是堆？"></a>什么是堆？</h4><p>如下图</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-2ee3dc6c142c9e90.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="heap"></p>
+<p>入队操作，向堆中加入一个元素</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-e93110fa7478b723.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="add"></p>
+<p>出队操作，从堆中删掉一个元素</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-833c0d3248547a8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="del"></p>
+<p>用堆来实现优先队列，入队，出队操作复杂度 O(log n)，比较平衡。</p>
+<p>最后还是上个 oc 写的代码吧（<a href="https://github.com/hehe520/CKDataStructureKit" target="_blank" rel="external">下载地址</a>），顺便吐槽一下 c++, java 都 priority_queue 这样的数据结构，oc 居然没有，得自己用 NSMutableArray 模拟，或者自己写一个。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;场景&quot;&gt;&lt;a href=&quot;#场景&quot; class=&quot;headerlink&quot; title=&quot;场景&quot;&gt;&lt;/a&gt;场景&lt;/h1&gt;&lt;p&gt;在做一个APP的聊天功能，聊天消息走socket推过来的，每个消息有唯一的id，id随时间是增大的，聊天消息要按时间有序，不重复，不遗漏。&lt;
+    
+    </summary>
+    
+      <category term="移动端" scheme="https://yidejia.github.io/categories/%E7%A7%BB%E5%8A%A8%E7%AB%AF/"/>
+    
+    
+      <category term="曹堃" scheme="https://yidejia.github.io/tags/%E6%9B%B9%E5%A0%83/"/>
+    
+      <category term="iOS" scheme="https://yidejia.github.io/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现</title>
+    <link href="https://yidejia.github.io/2016/11/07/wing_byeburger/"/>
+    <id>https://yidejia.github.io/2016/11/07/wing_byeburger/</id>
+    <published>2016-11-07T03:13:23.000Z</published>
+    <updated>2016-11-29T01:50:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>ByeBuger是一个能够让你快速实现标题栏以及底部导航栏在滑动时隐藏的库。本文将介绍ByeBuger的使用和实现。</p>
+<p>现在，ByeBuger可以轻易地将<strong>任何view</strong>在滑动的时候隐藏或者显示。同时支持头部(标题栏)和底部(导航栏)效果。</p>
+<p><a href="https://github.com/githubwing/ByeBurger" target="_blank" rel="external">ByeBurger项目地址</a></p>
+<p>先看一下全新的效果：</p>
+<p><img src="http://ac-mhke0kuv.clouddn.com/56781ae4da8c044aceec.gif" alt=""></p>
+<p><img src="http://ac-mhke0kuv.clouddn.com/fff0d5a7d0a1b1dfcbb1.gif" alt=""></p>
+<p>还不错吧。然而，实现这么炫酷的效果，<strong>仅仅需要一句代码！</strong></p>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>1.在gradle 编译库文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">        maven &#123; url &quot;https://jitpack.io&quot; &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">   compile &apos;com.github.githubwing:ByeBurger:1.1.0&apos;</div><div class="line">  compile &apos;com.android.support:design:25.0.0&apos;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>2.<strong>你仅仅需要一句代码，对，没错，只需要在你的View上加入一句。</strong><br>先使用CoordinatorLayout作为根布局,然后向你的<strong>任何</strong>View中插入一句app:layout_behavior属性，即可实现滑动的隐藏和显示。<br>你的标题栏可以是Toolbar或者LinearLayout或者什么鬼。<br>同样你的底部导航栏可以是最新的BottomNavigationView亦或者TabLayout在古老一点的RadioButton都可以！</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">android.support.design.widget.CoordinatorLayout</span>&gt;</span></div><div class="line"> </div><div class="line">  <span class="tag">&lt;<span class="name">Viewpager</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">Toolbar</span></span></div><div class="line">  	<span class="attr">app:layout_behavior</span>=<span class="string">"@string/bye_burger_title_behavior"</span></div><div class="line">  /&gt;</div><div class="line">  <span class="tag">&lt;<span class="name">BottomTab</span> </span></div><div class="line">   <span class="attr">android:layout_gravity</span>=<span class="string">"bottom"</span></div><div class="line">   <span class="attr">app:layout_behavior</span>=<span class="string">"@string/bye_burger_bottom_behavior"</span></div><div class="line">  /&gt;      </div><div class="line"><span class="tag">&lt;/<span class="name">android.support.design.widget.CoordinatorLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>具体的一句话是:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">对于标题栏</div><div class="line">app:layout_behavior=&quot;@string/bye_burger_title_behavior&quot;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">对于底部导航栏</div><div class="line">app:layout_behavior=&quot;@string/bye_burger_bottom_behavior&quot;</div></pre></td></tr></table></figure>
+<p>之后你就可以让你的app享受更多的阅读空间啦，相信这给用户带来了极大的便利。</p>
+<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>CoordinatorLayout类似于FrameLayout，所以注意xml层次，TitleBar和BottomTab要在xml下方。<br>只有实现NestScorll接口View的才可以实现监听，例如RecyclerView、NestScrollView.<br>在ListView下，是不生效的。</p>
+<p><a href="https://github.com/githubwing/ByeBurger" target="_blank" rel="external">ByeBurger项目地址</a></p>
+<p>以上就是ByeBurger的使用方式，接下来将会介绍ByeBurger的实现方式。如果你只是使用或者不感兴趣就不用往下看啦~~不过我还是建议你看一看，因为知道一个轮子的原理，百利无一害。</p>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h3 id="0-改名原因"><a href="#0-改名原因" class="headerlink" title="0.改名原因"></a>0.改名原因</h3><p>在ByeBurger 1.0版本的时候，其实ByeBurger不叫ByeBurger的，而叫做ByeBurgerNavigationView, 由名字可以看出，他是扩展了系统的BottomNavigationView，可是这样做有许多弊端，比如强制用户使用了某个控件，这样通用性不强。第二，为了用户有更多的选择，加入了头部隐藏效果。所以说，这个项目已经不能被称为NavigationView。于是我将名称进行了修改。</p>
+<h3 id="1-历史实现"><a href="#1-历史实现" class="headerlink" title="1.历史实现"></a>1.历史实现</h3><p>在1.0版本，我继承了BottomNavigationView。提供了两个方法，一个是show,另一个是hide.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    setY(mStartY);</div><div class="line">    TranslateAnimation ta = <span class="keyword">new</span> TranslateAnimation(<span class="number">0f</span>, <span class="number">0f</span>,getMeasuredHeight(),<span class="number">0</span>);</div><div class="line">    ta.setDuration(<span class="number">300</span>);</div><div class="line">    ta.setAnimationListener(<span class="keyword">this</span>);</div><div class="line">    startAnimation(ta);</div><div class="line"></div><div class="line">  &#125;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hide</span><span class="params">()</span> </span>&#123;</div><div class="line">    setY(mStartY + getMeasuredHeight());</div><div class="line"></div><div class="line">    TranslateAnimation ta = <span class="keyword">new</span> TranslateAnimation(<span class="number">0f</span>, <span class="number">0f</span>, -getMeasuredHeight(), getMeasuredHeight());</div><div class="line">    ta.setDuration(<span class="number">300</span>);</div><div class="line">    ta.setAnimationListener(<span class="keyword">this</span>);</div><div class="line">    startAnimation(ta);</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>实际上就是对Y坐标进行了一些处理。给个动画再让他改变他的Y坐标。来达到隐藏效果。(总之隐藏就是让用户看不到)</p>
+<p>然后利用Behavior，对NestScroll相关滑动进行监听，来改变ByeBurgerNavigationView的状态。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ByeBurgerBehavior</span> <span class="keyword">extends</span> <span class="title">CoordinatorLayout</span>.<span class="title">Behavior</span>&lt;<span class="title">ByeBurgerNavigationView</span>&gt; </span>&#123;</div></pre></td></tr></table></figure></p>
+<p>当然，这是1.0的实现，实用性比较低。所以有了1.1.0版本。</p>
+<h3 id="2-更新实现"><a href="#2-更新实现" class="headerlink" title="2.更新实现"></a>2.更新实现</h3><p>整体思路就是利用自定义behavior去监听nestScroll的滑动，来让对应的View改变。之前在<a href="http://androidwing.net/index.php/70" target="_blank" rel="external">CoordinatorLayout 自定义Behavior并不难，由简到难手把手带你撸三款！</a> 中介绍过一种Behavior的使用方式，不熟悉的可以先过去看看。这里用到的是第二种，主要是针对NestScroll进行监听。</p>
+<p>首先，要自定义一个Behavior，他的泛型，也就是child view为View。 这也保证了它的通用性。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ByeBurgerBottomBehavior</span> <span class="keyword">extends</span> <span class="title">CoordinatorLayout</span>.<span class="title">Behavior</span>&lt;<span class="title">View</span>&gt; </span>&#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>其次来处理一下onStartNestedScroll()方法，他提供一个返回值，用于过滤掉滑动事件。这里我们只关心上下滑动。所以应该这样。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onStartNestedScroll</span><span class="params">(CoordinatorLayout coordinatorLayout, View child,</span></span></div><div class="line">      View directTargetChild, View target, <span class="keyword">int</span> nestedScrollAxes) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> (nestedScrollAxes &amp; ViewCompat.SCROLL_AXIS_VERTICAL) != <span class="number">0</span>;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>最后，在onNestedPreScroll()进行child的对应操作。首先要根据参数dy来判断上下滑动,然后再根据view当前的状态来显示或者隐藏目标View。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNestedPreScroll</span><span class="params">(CoordinatorLayout coordinatorLayout, View child, View target,</span></span></div><div class="line">      <span class="keyword">int</span> dx, <span class="keyword">int</span> dy, <span class="keyword">int</span>[] consumed) &#123;</div><div class="line">	<span class="comment">//初始化一些参数</span></div><div class="line">    <span class="keyword">if</span> (isFirstMove) &#123;</div><div class="line">      isFirstMove = <span class="keyword">false</span>;</div><div class="line">      mAnimateHelper = AnimateHelper.get(child);</div><div class="line">      mAnimateHelper.setStartY(child.getY());</div><div class="line">      mAnimateHelper.setMode(AnimateHelper.MODE_BOTTOM);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (Math.abs(dy) &gt; mTouchSlop) &#123;</div><div class="line">      <span class="keyword">if</span> (dy &lt; <span class="number">0</span>) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (mAnimateHelper.getState() == AnimateHelper.STATE_HIDE) &#123;</div><div class="line">          mAnimateHelper.show();</div><div class="line">        &#125;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (dy &gt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (mAnimateHelper.getState() == AnimateHelper.STATE_SHOW) &#123;</div><div class="line">          mAnimateHelper.hide();</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在上面函数里，view的隐藏和显示委托给了AnimateHelper类。这是一个Helper，用来管理View的状态，也就是托付View隐藏或者显示。他的代码很简单，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AnimateHelper</span> </span>&#123;</div><div class="line">  <span class="keyword">public</span> View mTarget;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">float</span> mStartY;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> STATE_SHOW = <span class="number">1</span>;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> STATE_HIDE = <span class="number">0</span>;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">int</span> mCurrentState = STATE_SHOW;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">int</span> mMode = MODE_TITLE;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> MODE_TITLE = <span class="number">233</span>;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> MODE_BOTTOM = <span class="number">2333</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>提供一些成员，用于保存 状态，模式，起始Y坐标等等。</p>
+<p>提供一个工厂方法，用于获得处理目标view的helper:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> AnimateHelper <span class="title">get</span><span class="params">(View target)</span> </span>&#123;</div><div class="line">   <span class="keyword">return</span> <span class="keyword">new</span> AnimateHelper(target);</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>之后，提供show方法和hide方法，用于执行view的隐藏或者显示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mMode == MODE_TITLE) &#123;</div><div class="line">      showTitle();</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mMode == MODE_BOTTOM) &#123;</div><div class="line">      showBottom();</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hide</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mMode == MODE_TITLE) &#123;</div><div class="line">      hideTitle();</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mMode == MODE_BOTTOM) &#123;</div><div class="line">      hideBottom();</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>而 showTitle()和 showBottom()之类的如1.0版一样，是改变了一下y坐标，然后执行动画。</p>
+<h2 id="如何让用户使用"><a href="#如何让用户使用" class="headerlink" title="如何让用户使用"></a>如何让用户使用</h2><p>这里参考了系统预留behavior的使用方式，由于Behavior实例是系统反射出来的，所以需要完整的包名。于是我就将Beavior的包名写在了string.xml里，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"bye_burger_bottom_behavior"</span>&gt;</span>com.wingsofts.byeburgernavigationview.ByeBurgerBottomBehavior<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"bye_burger_title_behavior"</span>&gt;</span>com.wingsofts.byeburgernavigationview.ByeBurgerTitleBehavior<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>所以用户使用起来及其简便，只需要在xml中给view加入一行代码app:layoutbehavior=”@string/byeburgerbottom_behavior”即可。</p>
+<p>以上，ByeBurger库的使用和实现就写完了。</p>
+<p>如果你觉得还不错 欢迎star, 更欢迎贡献代码。</p>
+<p>本库下载地址：<a href="https://github.com/githubwing/ByeBurger" target="_blank" rel="external">https://github.com/githubwing/ByeBurger</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;ByeBuger是一个能够让你快速实现标题栏以及底部导航栏在滑动时隐藏的库。本文将介绍ByeBuger的使用和实现。&lt;/p&gt;
+&lt;p&gt;现在，ByeBuger可以轻易地将&lt;strong&gt;任何view&lt;/strong&gt;在滑动的时候隐藏或者显示。同时支持头部(标题栏)和底部(导航栏
+    
+    </summary>
+    
+      <category term="移动端" scheme="https://yidejia.github.io/categories/%E7%A7%BB%E5%8A%A8%E7%AB%AF/"/>
+    
+    
+      <category term="wing" scheme="https://yidejia.github.io/tags/wing/"/>
+    
+      <category term="ByeBurger" scheme="https://yidejia.github.io/tags/ByeBurger/"/>
+    
+  </entry>
   
   <entry>
     <title>什么是计算机内存？</title>
@@ -213,7 +321,7 @@
     <link href="https://yidejia.github.io/2016/11/02/Hexo%20+%20GitHub%20%E6%90%AD%E5%BB%BA%E5%B1%9E%E4%BA%8E%E4%B8%AA%E4%BA%BA%E6%88%96%E5%9B%A2%E9%98%9F%E7%9A%84%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/"/>
     <id>https://yidejia.github.io/2016/11/02/Hexo + GitHub 搭建属于个人或团队的技术博客/</id>
     <published>2016-11-02T09:23:55.000Z</published>
-    <updated>2016-11-04T07:01:10.000Z</updated>
+    <updated>2016-11-29T01:50:45.000Z</updated>
     
     <content type="html"><![CDATA[<p>现在很多个人或团队都有写博客的习惯，有的会选择将博客发表到如 CSDN、简书等比较受欢迎的地方，毕竟那里聚集了从菜鸟到大神的各类人才，来学习的和来吐槽的都有。本人就是喜欢热闹点的地方😬。不过今天不是介绍怎样将博文发表到这些地方，而是介绍如何使用 <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a> + <a href="https://github.com" target="_blank" rel="external">GitHub</a> 来搭建一个属于个人或团队的技术博客（从某种程度上也能提升逼格）。当然写博客最重要的还是抱着一种技术沉淀和积累的心态，将自己的所见、所闻、所感分享给大家。对于团队来说，也在一定程度上向外界传递当前团队的技术研发方向，招纳贤士，吸引人才嘛。</p>
 <p>虽然这类文章现在满大街都是，但我觉得还是有必要将这两天的搭建过程给记下来，这其中包含了一些细节需要注意的。以下操作都是基于 Mac 系统，其他平台的请另行查阅。同时建议即将动手实战的朋友先通读本文，有些细节可能需要你提前注意的。最后，请自配翻墙工具。</p>
@@ -291,6 +399,8 @@
     
       <category term="Blog 博客" scheme="https://yidejia.github.io/tags/Blog-%E5%8D%9A%E5%AE%A2/"/>
     
+      <category term="张晓钦" scheme="https://yidejia.github.io/tags/%E5%BC%A0%E6%99%93%E9%92%A6/"/>
+    
   </entry>
   
   <entry>
@@ -298,7 +408,7 @@
     <link href="https://yidejia.github.io/2016/11/02/Jenkins-%E6%90%AD%E5%BB%BA/"/>
     <id>https://yidejia.github.io/2016/11/02/Jenkins-搭建/</id>
     <published>2016-11-02T06:12:55.000Z</published>
-    <updated>2016-11-04T07:01:10.000Z</updated>
+    <updated>2016-11-29T01:50:45.000Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://upload-images.jianshu.io/upload_images/2083649-6bdfa1e51a834687.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Jenkins持续集成系统"></p>
 <p>持续集成是敏捷开发的重要一环,它具备以下优点:</p>
@@ -502,6 +612,8 @@
     
     
       <category term="Jenkins" scheme="https://yidejia.github.io/tags/Jenkins/"/>
+    
+      <category term="黎进财" scheme="https://yidejia.github.io/tags/%E9%BB%8E%E8%BF%9B%E8%B4%A2/"/>
     
   </entry>
   

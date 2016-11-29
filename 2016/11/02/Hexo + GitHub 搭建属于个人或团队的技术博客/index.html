@@ -5,33 +5,33 @@
   
   
   
-  <title>Hexo + GitHub 搭建属于个人或团队的技术博客 | 伊的家技术博客 | 自驱自律自组织</title>
+  <title>Hexo + GitHub 搭建属于个人或团队的技术博客 | 经传技术博客 | 自驱自律自组织</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="theme-color" content="#3F51B5">
   
   
-  <meta name="keywords" content="Hexo,GitHub,Blog 博客">
+  <meta name="keywords" content="Hexo,GitHub,Blog 博客,张晓钦">
   <meta name="description" content="现在很多个人或团队都有写博客的习惯，有的会选择将博客发表到如 CSDN、简书等比较受欢迎的地方，毕竟那里聚集了从菜鸟到大神的各类人才，来学习的和来吐槽的都有。本人就是喜欢热闹点的地方😬。不过今天不是介绍怎样将博文发表到这些地方，而是介绍如何使用 Hexo + GitHub 来搭建一个属于个人或团队的技术博客（从某种程度上也能提升逼格）。当然写博客最重要的还是抱着一种技术沉淀和积累的心态，将自己的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo + GitHub 搭建属于个人或团队的技术博客">
 <meta property="og:url" content="https://yidejia.github.io/2016/11/02/Hexo + GitHub 搭建属于个人或团队的技术博客/index.html">
-<meta property="og:site_name" content="伊的家技术博客">
+<meta property="og:site_name" content="经传技术博客">
 <meta property="og:description" content="现在很多个人或团队都有写博客的习惯，有的会选择将博客发表到如 CSDN、简书等比较受欢迎的地方，毕竟那里聚集了从菜鸟到大神的各类人才，来学习的和来吐槽的都有。本人就是喜欢热闹点的地方😬。不过今天不是介绍怎样将博文发表到这些地方，而是介绍如何使用 Hexo + GitHub 来搭建一个属于个人或团队的技术博客（从某种程度上也能提升逼格）。当然写博客最重要的还是抱着一种技术沉淀和积累的心态，将自己的">
 <meta property="og:image" content="https://cloud.githubusercontent.com/assets/7321351/19918231/81b8d62a-a104-11e6-8720-318784661abb.png">
 <meta property="og:image" content="https://cloud.githubusercontent.com/assets/7321351/19919154/ce5cfa54-a10b-11e6-8dc7-414ede4ae44b.png">
 <meta property="og:image" content="http://7xqitw.com1.z0.glb.clouddn.com/blog-resgit_hub_new_branch.png">
 <meta property="og:image" content="https://cloud.githubusercontent.com/assets/7321351/19921082/454918ae-a117-11e6-8163-47707a23d4f4.png">
-<meta property="og:updated_time" content="2016-11-04T07:01:10.000Z">
+<meta property="og:updated_time" content="2016-11-29T01:50:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo + GitHub 搭建属于个人或团队的技术博客">
 <meta name="twitter:description" content="现在很多个人或团队都有写博客的习惯，有的会选择将博客发表到如 CSDN、简书等比较受欢迎的地方，毕竟那里聚集了从菜鸟到大神的各类人才，来学习的和来吐槽的都有。本人就是喜欢热闹点的地方😬。不过今天不是介绍怎样将博文发表到这些地方，而是介绍如何使用 Hexo + GitHub 来搭建一个属于个人或团队的技术博客（从某种程度上也能提升逼格）。当然写博客最重要的还是抱着一种技术沉淀和积累的心态，将自己的">
 <meta name="twitter:image" content="https://cloud.githubusercontent.com/assets/7321351/19918231/81b8d62a-a104-11e6-8720-318784661abb.png">
   
-    <link rel="alternative" href="/atom.xml" title="伊的家技术博客" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="经传技术博客" type="application/atom+xml">
   
-  <meta name="summary" content="伊的家">
-  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="summary" content="经传集团">
+  <link rel="shortcut icon" href="/img/logo.png">
   <link rel="stylesheet" href="/css/style.css?v=1.1.5">
 </head>
 
@@ -45,9 +45,9 @@
     </a>
     <div class="brand-wrap">
       <div class="brand">
-        <a href="/" class="avatar"><img src="/img/logo.jpg"></a>
+        <a href="/" class="avatar"><img src="/img/logo.png"></a>
         <hgroup class="introduce">
-          <h5 class="nickname">伊的家技术部</h5>
+          <h5 class="nickname">经传技术部</h5>
           <a href="mailto:developer@yidejia.com" title="developer@yidejia.com" class="mail">developer@yidejia.com</a>
         </hgroup>
       </div>
@@ -94,7 +94,7 @@
 
       <footer class="footer">
   <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
-  <p>伊的家技术博客 &copy; 2016</p>
+  <p>经传技术博客 &copy; 2016</p>
   <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
   <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
   <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
@@ -236,8 +236,8 @@
             </div>
             <footer>
                 <a href="https://yidejia.github.io">
-                    <img src="/img/logo.jpg" alt="伊的家技术部">
-                    伊的家技术部
+                    <img src="/img/logo.png" alt="经传技术部">
+                    经传技术部
                 </a>
             </footer>
         </blockquote>
@@ -246,7 +246,7 @@
 
         <div class="post-footer">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Blog-博客/">Blog 博客</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Blog-博客/">Blog 博客</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/张晓钦/">张晓钦</a></li></ul>
 
 
             
@@ -326,7 +326,7 @@
 <script src="/js/embed.min.js?v=1.1.5"></script>
 <script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
 <script>
-var duoshuoQuery = {short_name:'wingwing1112', theme: 'none'}
+var duoshuoQuery = {short_name:'jztech', theme: 'none'}
 </script>
 
 
@@ -343,7 +343,7 @@ var duoshuoQuery = {short_name:'wingwing1112', theme: 'none'}
 <script>
 var BLOG_SHARE = {
     title: "Hexo + GitHub 搭建属于个人或团队的技术博客",
-    pic: "/img/logo.jpg",
+    pic: "/img/logo.png",
     summary: document.getElementsByName('summary')[0].content,
     url: "https://yidejia.github.io/2016/11/02/Hexo + GitHub 搭建属于个人或团队的技术博客/"
 };

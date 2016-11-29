@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现 | 经传技术博客 | 自驱自律自组织</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="wing,ByeBurger">
+  <meta name="description" content="ByeBuger是一个能够让你快速实现标题栏以及底部导航栏在滑动时隐藏的库。本文将介绍ByeBuger的使用和实现。
+现在，ByeBuger可以轻易地将任何view在滑动的时候隐藏或者显示。同时支持头部(标题栏)和底部(导航栏)效果。
+ByeBurger项目地址
+先看一下全新的效果：
+
+
+还不错吧。然而，实现这么炫酷的效果，仅仅需要一句代码！
+使用1.在gradle 编译库文件
+123456789">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现">
+<meta property="og:url" content="https://yidejia.github.io/2016/11/07/wing_byeburger/index.html">
+<meta property="og:site_name" content="经传技术博客">
+<meta property="og:description" content="ByeBuger是一个能够让你快速实现标题栏以及底部导航栏在滑动时隐藏的库。本文将介绍ByeBuger的使用和实现。
+现在，ByeBuger可以轻易地将任何view在滑动的时候隐藏或者显示。同时支持头部(标题栏)和底部(导航栏)效果。
+ByeBurger项目地址
+先看一下全新的效果：
+
+
+还不错吧。然而，实现这么炫酷的效果，仅仅需要一句代码！
+使用1.在gradle 编译库文件
+123456789">
+<meta property="og:image" content="http://ac-mhke0kuv.clouddn.com/56781ae4da8c044aceec.gif">
+<meta property="og:image" content="http://ac-mhke0kuv.clouddn.com/fff0d5a7d0a1b1dfcbb1.gif">
+<meta property="og:updated_time" content="2016-11-29T01:50:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现">
+<meta name="twitter:description" content="ByeBuger是一个能够让你快速实现标题栏以及底部导航栏在滑动时隐藏的库。本文将介绍ByeBuger的使用和实现。
+现在，ByeBuger可以轻易地将任何view在滑动的时候隐藏或者显示。同时支持头部(标题栏)和底部(导航栏)效果。
+ByeBurger项目地址
+先看一下全新的效果：
+
+
+还不错吧。然而，实现这么炫酷的效果，仅仅需要一句代码！
+使用1.在gradle 编译库文件
+123456789">
+<meta name="twitter:image" content="http://ac-mhke0kuv.clouddn.com/56781ae4da8c044aceec.gif">
+  
+    <link rel="alternative" href="/atom.xml" title="经传技术博客" type="application/atom+xml">
+  
+  <meta name="summary" content="经传集团">
+  <link rel="shortcut icon" href="/img/logo.png">
+  <link rel="stylesheet" href="/css/style.css?v=1.1.5">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar"><img src="/img/logo.png"></a>
+        <hgroup class="introduce">
+          <h5 class="nickname">经传技术部</h5>
+          <a href="mailto:developer@yidejia.com" title="developer@yidejia.com" class="mail">developer@yidejia.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yidejia" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>经传技术博客 &copy; 2016</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现</h1>
+        
+        
+
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#使用"><span class="post-toc-number">1.</span> <span class="post-toc-text">使用</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#注意"><span class="post-toc-number">2.</span> <span class="post-toc-text">注意</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#实现"><span class="post-toc-number">3.</span> <span class="post-toc-text">实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#0-改名原因"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">0.改名原因</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-历史实现"><span class="post-toc-number">3.0.2.</span> <span class="post-toc-text">1.历史实现</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-更新实现"><span class="post-toc-number">3.0.3.</span> <span class="post-toc-text">2.更新实现</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#如何让用户使用"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">如何让用户使用</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-wing_byeburger" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现</h1>
+        <div class="post-meta">
+            <time datetime="2016-11-07T03:13:23.000Z" itemprop="datePublished" class="post-time">
+  2016-11-07
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/移动端/">移动端</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>ByeBuger是一个能够让你快速实现标题栏以及底部导航栏在滑动时隐藏的库。本文将介绍ByeBuger的使用和实现。</p>
+<p>现在，ByeBuger可以轻易地将<strong>任何view</strong>在滑动的时候隐藏或者显示。同时支持头部(标题栏)和底部(导航栏)效果。</p>
+<p><a href="https://github.com/githubwing/ByeBurger" target="_blank" rel="external">ByeBurger项目地址</a></p>
+<p>先看一下全新的效果：</p>
+<p><img src="http://ac-mhke0kuv.clouddn.com/56781ae4da8c044aceec.gif" alt=""></p>
+<p><img src="http://ac-mhke0kuv.clouddn.com/fff0d5a7d0a1b1dfcbb1.gif" alt=""></p>
+<p>还不错吧。然而，实现这么炫酷的效果，<strong>仅仅需要一句代码！</strong></p>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>1.在gradle 编译库文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        jcenter()</div><div class="line">        maven &#123; url &quot;https://jitpack.io&quot; &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">   compile &apos;com.github.githubwing:ByeBurger:1.1.0&apos;</div><div class="line">  compile &apos;com.android.support:design:25.0.0&apos;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>2.<strong>你仅仅需要一句代码，对，没错，只需要在你的View上加入一句。</strong><br>先使用CoordinatorLayout作为根布局,然后向你的<strong>任何</strong>View中插入一句app:layout_behavior属性，即可实现滑动的隐藏和显示。<br>你的标题栏可以是Toolbar或者LinearLayout或者什么鬼。<br>同样你的底部导航栏可以是最新的BottomNavigationView亦或者TabLayout在古老一点的RadioButton都可以！</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">android.support.design.widget.CoordinatorLayout</span>&gt;</span></div><div class="line"> </div><div class="line">  <span class="tag">&lt;<span class="name">Viewpager</span> /&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">Toolbar</span></span></div><div class="line">  	<span class="attr">app:layout_behavior</span>=<span class="string">"@string/bye_burger_title_behavior"</span></div><div class="line">  /&gt;</div><div class="line">  <span class="tag">&lt;<span class="name">BottomTab</span> </span></div><div class="line">   <span class="attr">android:layout_gravity</span>=<span class="string">"bottom"</span></div><div class="line">   <span class="attr">app:layout_behavior</span>=<span class="string">"@string/bye_burger_bottom_behavior"</span></div><div class="line">  /&gt;      </div><div class="line"><span class="tag">&lt;/<span class="name">android.support.design.widget.CoordinatorLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>具体的一句话是:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">对于标题栏</div><div class="line">app:layout_behavior=&quot;@string/bye_burger_title_behavior&quot;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">对于底部导航栏</div><div class="line">app:layout_behavior=&quot;@string/bye_burger_bottom_behavior&quot;</div></pre></td></tr></table></figure>
+<p>之后你就可以让你的app享受更多的阅读空间啦，相信这给用户带来了极大的便利。</p>
+<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><p>CoordinatorLayout类似于FrameLayout，所以注意xml层次，TitleBar和BottomTab要在xml下方。<br>只有实现NestScorll接口View的才可以实现监听，例如RecyclerView、NestScrollView.<br>在ListView下，是不生效的。</p>
+<p><a href="https://github.com/githubwing/ByeBurger" target="_blank" rel="external">ByeBurger项目地址</a></p>
+<p>以上就是ByeBurger的使用方式，接下来将会介绍ByeBurger的实现方式。如果你只是使用或者不感兴趣就不用往下看啦~~不过我还是建议你看一看，因为知道一个轮子的原理，百利无一害。</p>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h3 id="0-改名原因"><a href="#0-改名原因" class="headerlink" title="0.改名原因"></a>0.改名原因</h3><p>在ByeBurger 1.0版本的时候，其实ByeBurger不叫ByeBurger的，而叫做ByeBurgerNavigationView, 由名字可以看出，他是扩展了系统的BottomNavigationView，可是这样做有许多弊端，比如强制用户使用了某个控件，这样通用性不强。第二，为了用户有更多的选择，加入了头部隐藏效果。所以说，这个项目已经不能被称为NavigationView。于是我将名称进行了修改。</p>
+<h3 id="1-历史实现"><a href="#1-历史实现" class="headerlink" title="1.历史实现"></a>1.历史实现</h3><p>在1.0版本，我继承了BottomNavigationView。提供了两个方法，一个是show,另一个是hide.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">    setY(mStartY);</div><div class="line">    TranslateAnimation ta = <span class="keyword">new</span> TranslateAnimation(<span class="number">0f</span>, <span class="number">0f</span>,getMeasuredHeight(),<span class="number">0</span>);</div><div class="line">    ta.setDuration(<span class="number">300</span>);</div><div class="line">    ta.setAnimationListener(<span class="keyword">this</span>);</div><div class="line">    startAnimation(ta);</div><div class="line"></div><div class="line">  &#125;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hide</span><span class="params">()</span> </span>&#123;</div><div class="line">    setY(mStartY + getMeasuredHeight());</div><div class="line"></div><div class="line">    TranslateAnimation ta = <span class="keyword">new</span> TranslateAnimation(<span class="number">0f</span>, <span class="number">0f</span>, -getMeasuredHeight(), getMeasuredHeight());</div><div class="line">    ta.setDuration(<span class="number">300</span>);</div><div class="line">    ta.setAnimationListener(<span class="keyword">this</span>);</div><div class="line">    startAnimation(ta);</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>实际上就是对Y坐标进行了一些处理。给个动画再让他改变他的Y坐标。来达到隐藏效果。(总之隐藏就是让用户看不到)</p>
+<p>然后利用Behavior，对NestScroll相关滑动进行监听，来改变ByeBurgerNavigationView的状态。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ByeBurgerBehavior</span> <span class="keyword">extends</span> <span class="title">CoordinatorLayout</span>.<span class="title">Behavior</span>&lt;<span class="title">ByeBurgerNavigationView</span>&gt; </span>&#123;</div></pre></td></tr></table></figure></p>
+<p>当然，这是1.0的实现，实用性比较低。所以有了1.1.0版本。</p>
+<h3 id="2-更新实现"><a href="#2-更新实现" class="headerlink" title="2.更新实现"></a>2.更新实现</h3><p>整体思路就是利用自定义behavior去监听nestScroll的滑动，来让对应的View改变。之前在<a href="http://androidwing.net/index.php/70" target="_blank" rel="external">CoordinatorLayout 自定义Behavior并不难，由简到难手把手带你撸三款！</a> 中介绍过一种Behavior的使用方式，不熟悉的可以先过去看看。这里用到的是第二种，主要是针对NestScroll进行监听。</p>
+<p>首先，要自定义一个Behavior，他的泛型，也就是child view为View。 这也保证了它的通用性。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ByeBurgerBottomBehavior</span> <span class="keyword">extends</span> <span class="title">CoordinatorLayout</span>.<span class="title">Behavior</span>&lt;<span class="title">View</span>&gt; </span>&#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>其次来处理一下onStartNestedScroll()方法，他提供一个返回值，用于过滤掉滑动事件。这里我们只关心上下滑动。所以应该这样。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onStartNestedScroll</span><span class="params">(CoordinatorLayout coordinatorLayout, View child,</span></span></div><div class="line">      View directTargetChild, View target, <span class="keyword">int</span> nestedScrollAxes) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> (nestedScrollAxes &amp; ViewCompat.SCROLL_AXIS_VERTICAL) != <span class="number">0</span>;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>最后，在onNestedPreScroll()进行child的对应操作。首先要根据参数dy来判断上下滑动,然后再根据view当前的状态来显示或者隐藏目标View。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNestedPreScroll</span><span class="params">(CoordinatorLayout coordinatorLayout, View child, View target,</span></span></div><div class="line">      <span class="keyword">int</span> dx, <span class="keyword">int</span> dy, <span class="keyword">int</span>[] consumed) &#123;</div><div class="line">	<span class="comment">//初始化一些参数</span></div><div class="line">    <span class="keyword">if</span> (isFirstMove) &#123;</div><div class="line">      isFirstMove = <span class="keyword">false</span>;</div><div class="line">      mAnimateHelper = AnimateHelper.get(child);</div><div class="line">      mAnimateHelper.setStartY(child.getY());</div><div class="line">      mAnimateHelper.setMode(AnimateHelper.MODE_BOTTOM);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (Math.abs(dy) &gt; mTouchSlop) &#123;</div><div class="line">      <span class="keyword">if</span> (dy &lt; <span class="number">0</span>) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (mAnimateHelper.getState() == AnimateHelper.STATE_HIDE) &#123;</div><div class="line">          mAnimateHelper.show();</div><div class="line">        &#125;</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (dy &gt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (mAnimateHelper.getState() == AnimateHelper.STATE_SHOW) &#123;</div><div class="line">          mAnimateHelper.hide();</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在上面函数里，view的隐藏和显示委托给了AnimateHelper类。这是一个Helper，用来管理View的状态，也就是托付View隐藏或者显示。他的代码很简单，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AnimateHelper</span> </span>&#123;</div><div class="line">  <span class="keyword">public</span> View mTarget;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">float</span> mStartY;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> STATE_SHOW = <span class="number">1</span>;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> STATE_HIDE = <span class="number">0</span>;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">int</span> mCurrentState = STATE_SHOW;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">int</span> mMode = MODE_TITLE;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> MODE_TITLE = <span class="number">233</span>;</div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> MODE_BOTTOM = <span class="number">2333</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>提供一些成员，用于保存 状态，模式，起始Y坐标等等。</p>
+<p>提供一个工厂方法，用于获得处理目标view的helper:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> AnimateHelper <span class="title">get</span><span class="params">(View target)</span> </span>&#123;</div><div class="line">   <span class="keyword">return</span> <span class="keyword">new</span> AnimateHelper(target);</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>之后，提供show方法和hide方法，用于执行view的隐藏或者显示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mMode == MODE_TITLE) &#123;</div><div class="line">      showTitle();</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mMode == MODE_BOTTOM) &#123;</div><div class="line">      showBottom();</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hide</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mMode == MODE_TITLE) &#123;</div><div class="line">      hideTitle();</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mMode == MODE_BOTTOM) &#123;</div><div class="line">      hideBottom();</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>而 showTitle()和 showBottom()之类的如1.0版一样，是改变了一下y坐标，然后执行动画。</p>
+<h2 id="如何让用户使用"><a href="#如何让用户使用" class="headerlink" title="如何让用户使用"></a>如何让用户使用</h2><p>这里参考了系统预留behavior的使用方式，由于Behavior实例是系统反射出来的，所以需要完整的包名。于是我就将Beavior的包名写在了string.xml里，如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"bye_burger_bottom_behavior"</span>&gt;</span>com.wingsofts.byeburgernavigationview.ByeBurgerBottomBehavior<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"bye_burger_title_behavior"</span>&gt;</span>com.wingsofts.byeburgernavigationview.ByeBurgerTitleBehavior<span class="tag">&lt;/<span class="name">string</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>所以用户使用起来及其简便，只需要在xml中给view加入一行代码app:layoutbehavior=”@string/byeburgerbottom_behavior”即可。</p>
+<p>以上，ByeBurger库的使用和实现就写完了。</p>
+<p>如果你觉得还不错 欢迎star, 更欢迎贡献代码。</p>
+<p>本库下载地址：<a href="https://github.com/githubwing/ByeBurger" target="_blank" rel="external">https://github.com/githubwing/ByeBurger</a></p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+            <div class="content">
+               这里写留言或版权声明：<a href="/2016/11/07/wing_byeburger/" target="_blank" rel="external">https://yidejia.github.io/2016/11/07/wing_byeburger/</a>
+            </div>
+            <footer>
+                <a href="https://yidejia.github.io">
+                    <img src="/img/logo.png" alt="经传技术部">
+                    经传技术部
+                </a>
+            </footer>
+        </blockquote>
+
+        
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ByeBurger/">ByeBurger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/wing/">wing</a></li></ul>
+
+
+            
+            <div class="post-share-wrap">
+                <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+                <a href="javascript:;" id="share-fab" class="post-share-fab waves-effect waves-circle">
+                    <i class="icon icon-share-alt icon-lg"></i>
+                </a>
+            </div>
+            
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/11/29/caokun_priority_queue/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">iOS - 优先队列的三种实现方式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/11/04/caokun_memory/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">什么是计算机内存？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="wing_byeburger" data-title="一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现" data-url="https://yidejia.github.io/2016/11/07/wing_byeburger/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.1.5"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'jztech', theme: 'none'}
+</script>
+
+
+
+
+</article>
+
+
+</div>
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现",
+    pic: "/img/logo.png",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "https://yidejia.github.io/2016/11/07/wing_byeburger/"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.1.5"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.1.5"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

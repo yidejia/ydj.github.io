@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <title>iOS 图像处理 - 一种裁剪图片圆角的算法 | 经传技术博客 | 自驱自律自组织</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="theme-color" content="#3F51B5">
+  
+  
+  <meta name="keywords" content="曹堃,iOS">
+  <meta name="description" content="场景经常看到各种高效裁剪圆角的文章，正好之前做过一点数字图像处理，就打算用空域处理的办法，写个裁剪圆角的算法，一定要尽可能的快的，不然界面容易卡顿。
+裁圆角很简单，对于图像上的一个点(x, y)，判断其在不在圆角矩形内，在的话 alpha 是原值，不在的话 alpha 设为 0 即可。如下图
+
+我遍历所有像素，判断每个像素在不在4个圆的圆内就行了，4个角，每个角有一个四分之一的圆。
+一个优化就是，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 图像处理 - 一种裁剪图片圆角的算法">
+<meta property="og:url" content="https://yidejia.github.io/2017/01/01/caokun_radius/index.html">
+<meta property="og:site_name" content="经传技术博客">
+<meta property="og:description" content="场景经常看到各种高效裁剪圆角的文章，正好之前做过一点数字图像处理，就打算用空域处理的办法，写个裁剪圆角的算法，一定要尽可能的快的，不然界面容易卡顿。
+裁圆角很简单，对于图像上的一个点(x, y)，判断其在不在圆角矩形内，在的话 alpha 是原值，不在的话 alpha 设为 0 即可。如下图
+
+我遍历所有像素，判断每个像素在不在4个圆的圆内就行了，4个角，每个角有一个四分之一的圆。
+一个优化就是，">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-dd591dcaee665459.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-8309f401d0998258.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-90da5881b333d6e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-b73e38ee9e93ab7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2764502-187ddecf716e83d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-12-13T09:45:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 图像处理 - 一种裁剪图片圆角的算法">
+<meta name="twitter:description" content="场景经常看到各种高效裁剪圆角的文章，正好之前做过一点数字图像处理，就打算用空域处理的办法，写个裁剪圆角的算法，一定要尽可能的快的，不然界面容易卡顿。
+裁圆角很简单，对于图像上的一个点(x, y)，判断其在不在圆角矩形内，在的话 alpha 是原值，不在的话 alpha 设为 0 即可。如下图
+
+我遍历所有像素，判断每个像素在不在4个圆的圆内就行了，4个角，每个角有一个四分之一的圆。
+一个优化就是，">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2764502-dd591dcaee665459.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternative" href="/atom.xml" title="经传技术博客" type="application/atom+xml">
+  
+  <meta name="summary" content="经传集团">
+  <link rel="shortcut icon" href="/img/logo.png">
+  <link rel="stylesheet" href="/css/style.css?v=1.1.5">
+</head>
+
+<body>
+  <div id="loading" class="active"></div>
+
+  <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar"><img src="/img/logo.png"></a>
+        <hgroup class="introduce">
+          <h5 class="nickname">经传技术部</h5>
+          <a href="mailto:developer@yidejia.com" title="developer@yidejia.com" class="mail">developer@yidejia.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yidejia" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+
+      <footer class="footer">
+  <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
+  <p>经传技术博客 &copy; 2016</p>
+  <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+  <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
+  <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
+</footer>
+
+    </div>
+  </div>
+</aside>
+  <main id="main">
+    <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">iOS 图像处理 - 一种裁剪图片圆角的算法</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-share">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container">
+        <h1 class="title">iOS 图像处理 - 一种裁剪图片圆角的算法</h1>
+        
+        
+
+    </div>
+
+    
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#场景"><span class="post-toc-number">1.</span> <span class="post-toc-text">场景</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#测试结果与分析"><span class="post-toc-number">2.</span> <span class="post-toc-text">测试结果与分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#结论"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">结论</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+<article id="post-caokun_radius" 
+  class="post-article article-type-post" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">iOS 图像处理 - 一种裁剪图片圆角的算法</h1>
+        <div class="post-meta">
+            <time datetime="2017-01-01T08:12:55.000Z" itemprop="datePublished" class="post-time">
+  2017-01-01
+</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/移动端/">移动端</a></li></ul>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h1><p>经常看到各种高效裁剪圆角的文章，正好之前做过一点数字图像处理，就打算用空域处理的办法，写个裁剪圆角的算法，一定要尽可能的快的，不然界面容易卡顿。</p>
+<p>裁圆角很简单，对于图像上的一个点(x, y)，判断其在不在圆角矩形内，在的话 alpha 是原值，不在的话 alpha 设为 0 即可。如下图</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-dd591dcaee665459.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="15F6A143-2704-402D-88EA-DB80B0266F80.png"></p>
+<p>我遍历所有像素，判断每个像素在不在4个圆的圆内就行了，4个角，每个角有一个四分之一的圆。</p>
+<p><strong>一个优化</strong>就是，我不需要遍历全部的像素就能裁出圆角，只需要考虑类似左下角三角形的区域就行了，左下，左上，右上，右下，一共4个三角形区域（另外3个图中没画出），for循环的时候，就循环这个4个三角形区域就行了。</p>
+<p>所以对于一幅 w * h 的图像，设圆角大小为 n，n &lt; min(w, h) / 2，其复杂度为 O(n) = 2(n^2)，最坏的情况计算量也不会超过 wh / 2</p>
+<p>对于一个像素点(x, y)，判断其在不在圆内的公式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">如果  (x-cx)^2 + (y-cy)^2 &lt;= r^2  就表示点 (x, y) 在圆内，反之不在。</div></pre></td></tr></table></figure></p>
+<p>理论说完了，下面看实际的测试数据。</p>
+<h1 id="测试结果与分析"><a href="#测试结果与分析" class="headerlink" title="测试结果与分析"></a>测试结果与分析</h1><p>根据上面的分析，我写了一个裁剪圆角的程序，叫为 <strong>my裁剪</strong>。<br>还用了苹果 CoreGraphics 库的 CGContext 裁剪圆角，叫为 <strong>CG 裁剪</strong>。<br>还用了 UIKit 的 UIBezierPath 裁剪圆角，叫为 <strong>贝塞尔裁剪</strong>。</p>
+<p>下面来对比三种方法，哪种最快。</p>
+<hr>
+<p>实验数据：<br>一张png格式 512 * 512 的 lena 女神的标准实验图像。<br>圆角大小分别取 10，50，100，250，这4个值。<br>每次实验裁剪10000张图片数据，获得总耗时。</p>
+<p>实验前关闭所有比较耗CPU的软件。实验中不操作电脑，避免影响实验结果准确性。最后得到了以下实验数据</p>
+<ul>
+<li><strong>圆角为 10 的情况</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">裁剪方法</th>
+<th style="text-align:center">用时 ms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">my裁剪</td>
+<td style="text-align:center">2085</td>
+</tr>
+<tr>
+<td style="text-align:center">CGContext裁剪</td>
+<td style="text-align:center">15270</td>
+</tr>
+<tr>
+<td style="text-align:center">贝塞尔裁剪</td>
+<td style="text-align:center">14317</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-8309f401d0998258.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="圆角为 10"></p>
+<ul>
+<li><strong>圆角为 50 的情况</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">裁剪方法</th>
+<th style="text-align:center">用时 ms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">my裁剪</td>
+<td style="text-align:center">2419</td>
+</tr>
+<tr>
+<td style="text-align:center">CGContext裁剪</td>
+<td style="text-align:center">14676</td>
+</tr>
+<tr>
+<td style="text-align:center">贝塞尔裁剪</td>
+<td style="text-align:center">14612</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-90da5881b333d6e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="圆角为 50"></p>
+<ul>
+<li><strong>圆角为 100 的情况</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">裁剪方法</th>
+<th style="text-align:center">用时 ms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">my裁剪</td>
+<td style="text-align:center">2419</td>
+</tr>
+<tr>
+<td style="text-align:center">CGContext裁剪</td>
+<td style="text-align:center">14676</td>
+</tr>
+<tr>
+<td style="text-align:center">贝塞尔裁剪</td>
+<td style="text-align:center">14612</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-b73e38ee9e93ab7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="圆角为 100"></p>
+<ul>
+<li><strong>圆角为 250 的情况</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">裁剪方法</th>
+<th style="text-align:center">用时 ms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">my裁剪</td>
+<td style="text-align:center">12399</td>
+</tr>
+<tr>
+<td style="text-align:center">CGContext裁剪</td>
+<td style="text-align:center">14692</td>
+</tr>
+<tr>
+<td style="text-align:center">贝塞尔裁剪</td>
+<td style="text-align:center">14313</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://upload-images.jianshu.io/upload_images/2764502-187ddecf716e83d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="圆角为 250"></p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>从上面数据可以看出：<br><strong>时间上</strong>：不管圆角大小 n 是多少，CGContext 和 UIBezierPath，耗时都在 14.6 秒左右。而 my裁剪在圆角小的时候，性能较好，耗时在 3 秒左右，随着圆角增到250，耗时也去到了 12 秒，但最坏不会超过 w * h / 2，在 n &lt; min(w, h) / 2 时，具有较高的性能，比CGContext, UIBezierPath要快。</p>
+<p><strong>空间上</strong>：内存使用上，没精确测量，大致看了一下，裁剪1万张 512 * 512的图片，3种算法的内存使用都在 10MB 左右，还可以接受，但 UIBezierPath 裁剪时居然会写磁盘。</p>
+<p>另外，在图像编码/解码中，用了 CGDataProviderRef，CGImageRef，这两个对象，它们的速度应该是很快的了，如果自己写的话，预测可以更快。</p>
+<p>最后口说无凭，我发个代码可以自己下载运行看看结果（<a href="https://github.com/hehe520/ClipCorner" target="_blank" rel="external">下载地址</a>）<br>使用方法都在代码的 ViewController.m 文件里，就这么一个文件，很好找，没有其他了。请在 iphone6，6 plus 的屏幕下运行。本实验重点在于3个算法，无关紧要的东西我没做太多处理。</p>
+
+        </div>
+        
+        <blockquote class="post-copyright">
+            <div class="content">
+               这里写留言或版权声明：<a href="/2017/01/01/caokun_radius/" target="_blank" rel="external">https://yidejia.github.io/2017/01/01/caokun_radius/</a>
+            </div>
+            <footer>
+                <a href="https://yidejia.github.io">
+                    <img src="/img/logo.png" alt="经传技术部">
+                    经传技术部
+                </a>
+            </footer>
+        </blockquote>
+
+        
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/曹堃/">曹堃</a></li></ul>
+
+
+            
+            <div class="post-share-wrap">
+                <div class="post-share" id="post-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+                <a href="javascript:;" id="share-fab" class="post-share-fab waves-effect waves-circle">
+                    <i class="icon icon-share-alt icon-lg"></i>
+                </a>
+            </div>
+            
+
+        </div>
+    </div>   
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/11/29/caokun_priority_queue/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">iOS - 优先队列的三种实现方式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+            
+    
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="caokun_radius" data-title="iOS 图像处理 - 一种裁剪图片圆角的算法" data-url="https://yidejia.github.io/2017/01/01/caokun_radius/"></div>
+</div>
+<script src="/js/embed.min.js?v=1.1.5"></script>
+<script src="//cdn.bootcss.com/marked/0.3.6/marked.min.js" async="async"></script>
+<script>
+var duoshuoQuery = {short_name:'jztech', theme: 'none'}
+</script>
+
+
+
+
+</article>
+
+
+</div>
+  </main>
+  <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+<script>
+var BLOG_SHARE = {
+    title: "iOS 图像处理 - 一种裁剪图片圆角的算法",
+    pic: "/img/logo.png",
+    summary: document.getElementsByName('summary')[0].content,
+    url: "https://yidejia.github.io/2017/01/01/caokun_radius/"
+};
+</script>
+<div class="global-share" id="global-share">
+    <div class="tit">分享到：</div>
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" href="javascript:;" data-title="微博" data-service="tsina">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns" href="javascript:;" data-title="微信" data-service="weixin">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" href="javascript:;" data-title=" QQ" data-service="cqq">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" href="javascript:;" data-title=" Facebook" data-service="fb">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" href="javascript:;" data-title=" Twitter" data-service="twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="douban share-sns" href="javascript:;" data-title="豆瓣" data-service="douban">
+          豆
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+  <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script src="/js/main.min.js?v=1.1.5"></script>
+
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="/{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.1.5"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
